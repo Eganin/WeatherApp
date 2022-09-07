@@ -1,4 +1,4 @@
-package com.eganin.jetpack.thebest.weatherapp.ui.theme
+package com.eganin.jetpack.thebest.weatherapp.presentation.ui.theme
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable

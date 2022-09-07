@@ -1,4 +1,4 @@
-package com.eganin.jetpack.thebest.weatherapp.ui.theme
+package com.eganin.jetpack.thebest.weatherapp.presentation.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
