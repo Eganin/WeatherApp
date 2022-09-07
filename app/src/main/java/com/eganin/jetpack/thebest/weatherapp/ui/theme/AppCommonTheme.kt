@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.Dp
 data class AppColors(
     val primaryText: Color,
     val primaryBackground: Color,
+    val secondaryBackground : Color,
     val secondaryText: Color,
     val tintColor: Color,
     val errorColor: Color,

@@ -10,6 +10,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherState
+import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
+import com.eganin.jetpack.thebest.weatherapp.ui.theme.Typography
 
 @Composable
 fun WeatherForecast(
@@ -24,8 +26,8 @@ fun WeatherForecast(
         ) {
             Text(
                 text = "Today",
-                fontSize = 20.sp,
-                color = Color.White
+                style = Typography.h5,
+                color = AppTheme.colors.secondaryText
             )
             Spacer(modifier = Modifier.height(16.dp))
             LazyRow {

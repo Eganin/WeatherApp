@@ -1,6 +1,7 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.listdetail
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.width
@@ -14,13 +15,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.weather.WeatherData
+import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppColors
+import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
+import com.eganin.jetpack.thebest.weatherapp.ui.theme.Typography
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun HourlyWeatherDisplay(
     weatherData: WeatherData,
     modifier: Modifier = Modifier,
-    textColor: Color = Color.White
 ) {
     val formattedTime = remember(weatherData) {
         weatherData.time.format(
@@ -34,7 +37,8 @@ fun HourlyWeatherDisplay(
     ) {
         Text(
             text = formattedTime,
-            color = Color.LightGray
+            color = AppTheme.colors.secondaryText,
+            style = Typography.h6
         )
         Image(
             painter = painterResource(id = weatherData.weatherType.iconRes),
@@ -43,8 +47,8 @@ fun HourlyWeatherDisplay(
         )
         Text(
             text = "${weatherData.temperatureCelsius}C",
-            color = textColor,
-            fontWeight = FontWeight.Bold
+            color = AppTheme.colors.secondaryText,
+            style = Typography.h6
         )
     }
 }

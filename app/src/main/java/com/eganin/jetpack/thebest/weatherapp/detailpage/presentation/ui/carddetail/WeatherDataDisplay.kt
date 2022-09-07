@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 
 @Composable
 fun WeatherDataDisplay(
@@ -21,7 +22,7 @@ fun WeatherDataDisplay(
     icon: ImageVector,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = TextStyle(),
-    iconTint: Color = Color.White
+    iconTint: Color = AppTheme.colors.primaryText
 ) {
     Row(
         modifier = modifier,
@@ -36,7 +37,8 @@ fun WeatherDataDisplay(
         Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = "$value$unit",
-            style = textStyle
+            style = textStyle,
+            color = AppTheme.colors.primaryText
         )
     }
 }

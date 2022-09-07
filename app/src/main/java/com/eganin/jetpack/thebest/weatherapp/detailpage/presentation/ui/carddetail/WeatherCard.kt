@@ -12,11 +12,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.eganin.jetpack.thebest.weatherapp.R
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherState
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.weathercard.StockChart
+import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
+import com.eganin.jetpack.thebest.weatherapp.ui.theme.Typography
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
@@ -45,7 +46,8 @@ fun WeatherCard(
                         )
                     }",
                     modifier = Modifier.align(Alignment.End),
-                    color = Color.White
+                    style = Typography.caption,
+                    color = AppTheme.colors.primaryText
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Image(
@@ -56,14 +58,14 @@ fun WeatherCard(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "${data.temperatureCelsius}C",
-                    fontSize = 50.sp,
-                    color = Color.White
+                    style = Typography.h3,
+                    color = AppTheme.colors.primaryText
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = data.weatherType.weatherDesc,
-                    fontSize = 20.sp,
-                    color = Color.White
+                    style = Typography.h5,
+                    color = AppTheme.colors.primaryText
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 Row(
@@ -74,23 +76,23 @@ fun WeatherCard(
                         value = data.pressure.roundToInt(),
                         unit = "hpa",
                         icon = ImageVector.vectorResource(id = R.drawable.ic_pressure),
-                        iconTint = Color.White,
-                        textStyle = TextStyle(color = Color.White)
+                        textStyle = Typography.caption
                     )
                     WeatherDataDisplay(
                         value = data.humidity.roundToInt(),
                         unit = "%",
                         icon = ImageVector.vectorResource(id = R.drawable.ic_drop),
-                        iconTint = Color.White,
-                        textStyle = TextStyle(color = Color.White)
+                        textStyle = Typography.caption
                     )
                     WeatherDataDisplay(
                         value = data.windSpeed.roundToInt(),
                         unit = "km/h",
                         icon = ImageVector.vectorResource(id = R.drawable.ic_wind),
-                        iconTint = Color.White,
-                        textStyle = TextStyle(color = Color.White)
+                        textStyle = Typography.caption
                     )
+                }
+                state.weatherInfo.weatherDataPerDay.get(0)?.let { info ->
+                    StockChart(info=info)
                 }
             }
         }

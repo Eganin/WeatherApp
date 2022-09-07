@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.util.getThemeType
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherDetailPage
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherViewModel
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.*
@@ -57,13 +58,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private fun getThemeType(): ThemeType {
-    val hour = LocalDateTime.now().hour
-    val type = when (hour) {
-        in 6..11 -> ThemeType.MORNING
-        in 12..17 -> ThemeType.DAY
-        in 18..23 -> ThemeType.EVENING
-        else -> ThemeType.NIGHT
-    }
-    return type
-}

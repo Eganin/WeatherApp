@@ -1,4 +1,4 @@
-package com.eganin.jetpack.thebest.weatherapp.detailpage.data.rmapper
+package com.eganin.jetpack.thebest.weatherapp.detailpage.data.mapper
 
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.WeatherDataDto
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.WeatherDto
@@ -55,4 +55,23 @@ fun WeatherDto.toWeatherInfo(): WeatherInfo {
         weatherDataPerDay = weatherDataMap,
         currentWeatherData = currentWeatherData
     )
+}
+
+fun List<WeatherData>.toAverageValues(): List<Double> {
+    var nightCelsius = 0.0
+    var morningCelsius = 0.0
+    var dayCelsius = 0.0
+    var eveningCelsius = 0.0
+    forEachIndexed { index, weatherData ->
+        if (index in 6..11) {
+            morningCelsius += weatherData.temperatureCelsius
+        } else if (index in 12..17) {
+            dayCelsius += weatherData.temperatureCelsius
+        } else if (index in 18..23) {
+            eveningCelsius += weatherData.temperatureCelsius
+        } else {
+            nightCelsius += weatherData.temperatureCelsius
+        }
+    }
+    return listOf(morningCelsius, dayCelsius, eveningCelsius, nightCelsius)
 }

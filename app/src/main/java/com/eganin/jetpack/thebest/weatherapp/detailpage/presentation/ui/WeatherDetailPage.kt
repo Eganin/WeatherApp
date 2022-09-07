@@ -13,8 +13,6 @@ import androidx.compose.ui.unit.dp
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.carddetail.WeatherCard
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.listdetail.WeatherForecast
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
-import com.eganin.jetpack.thebest.weatherapp.ui.theme.DarkBlue
-import com.eganin.jetpack.thebest.weatherapp.ui.theme.DeepBlue
 
 @Composable
 fun WeatherDetailPage(viewModel: WeatherViewModel) {
@@ -22,11 +20,11 @@ fun WeatherDetailPage(viewModel: WeatherViewModel) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(DarkBlue)
+                .background(AppTheme.colors.primaryBackground)
         ) {
             WeatherCard(
                 state = viewModel.state,
-                backgroundColor = AppTheme.colors.primaryBackground
+                backgroundColor = AppTheme.colors.cardBackground
             )
             Spacer(modifier = Modifier.height(16.dp))
             WeatherForecast(state = viewModel.state)
@@ -40,7 +38,7 @@ fun WeatherDetailPage(viewModel: WeatherViewModel) {
         viewModel.state.error?.let { error ->
             Text(
                 text = error,
-                color = Color.Red,
+                color = AppTheme.colors.errorColor,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Center)
             )
