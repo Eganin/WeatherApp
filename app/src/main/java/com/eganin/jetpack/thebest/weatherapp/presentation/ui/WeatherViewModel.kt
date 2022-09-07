@@ -1,5 +1,6 @@
 package com.eganin.jetpack.thebest.weatherapp.presentation.ui
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -46,6 +47,7 @@ class WeatherViewModel @Inject constructor(
                     }
                 }
             } ?: run {
+                Log.d("EEE","FAILED")
                 state =state.copy(
                     isLoading =false,
                     error = "Couldn't retrieve location.Make sure enable GPS"
