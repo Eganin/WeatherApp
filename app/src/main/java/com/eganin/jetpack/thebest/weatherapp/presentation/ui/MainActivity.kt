@@ -9,10 +9,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.eganin.jetpack.thebest.weatherapp.presentation.ui.theme.DarkBlue
 import com.eganin.jetpack.thebest.weatherapp.presentation.ui.theme.DeepBlue
 import com.eganin.jetpack.thebest.weatherapp.presentation.ui.theme.WeatherAppTheme
@@ -53,6 +56,8 @@ class MainActivity : ComponentActivity() {
                             state = viewModel.state,
                             backgroundColor = DeepBlue
                         )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        WeatherForecast(state = viewModel.state)
                     }
                 }
             }
