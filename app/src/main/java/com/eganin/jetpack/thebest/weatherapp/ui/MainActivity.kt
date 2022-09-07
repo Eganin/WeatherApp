@@ -34,6 +34,7 @@ class MainActivity : ComponentActivity() {
             ActivityResultContracts.RequestMultiplePermissions()
         ) {
             viewModel.loadWeatherInfo()
+            viewModel.loadDataStock()
         }
         permissionLauncher.launch(
             arrayOf(

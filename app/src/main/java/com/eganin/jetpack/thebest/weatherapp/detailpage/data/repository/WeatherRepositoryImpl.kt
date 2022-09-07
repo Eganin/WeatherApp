@@ -29,7 +29,7 @@ class WeatherRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDataForStock(lat: Double, long: Double): Resource<List<Double>> {
+    override suspend fun getDataForStock(lat: Double, long: Double): Resource<List<Int>> {
         return withContext(Dispatchers.IO) {
             try {
                 Resource.Success(

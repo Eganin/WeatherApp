@@ -2,6 +2,7 @@ package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,17 +18,21 @@ import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 @Composable
 fun WeatherDetailPage(viewModel: WeatherViewModel) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(AppTheme.colors.primaryBackground)
         ) {
-            WeatherCard(
-                state = viewModel.state,
-                backgroundColor = AppTheme.colors.cardBackground
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            WeatherForecast(state = viewModel.state)
+            item {
+                WeatherCard(
+                    state = viewModel.state,
+                    backgroundColor = AppTheme.colors.cardBackground
+                )
+            }
+            item { Spacer(modifier = Modifier.height(16.dp)) }
+            item {
+                WeatherForecast(state = viewModel.state)
+            }
         }
         if (viewModel.state.isLoading) {
             CircularProgressIndicator(

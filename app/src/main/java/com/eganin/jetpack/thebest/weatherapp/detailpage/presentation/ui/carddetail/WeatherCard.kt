@@ -91,8 +91,8 @@ fun WeatherCard(
                         textStyle = Typography.caption
                     )
                 }
-                state.weatherInfo.weatherDataPerDay.get(0)?.let { info ->
-                    StockChart(info=info)
+                state.dataStock?.let {
+                    StockChart(info =it)
                 }
             }
         }

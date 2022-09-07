@@ -7,6 +7,7 @@ import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.weather.WeatherIn
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.weather.WeatherType
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.math.roundToInt
 
 private data class IndexedWeatherData(
     val index: Int,
@@ -57,7 +58,7 @@ fun WeatherDto.toWeatherInfo(): WeatherInfo {
     )
 }
 
-fun List<WeatherData>.toAverageValues(): List<Double> {
+fun List<WeatherData>.toAverageValues(): List<Int> {
     var nightCelsius = 0.0
     var morningCelsius = 0.0
     var dayCelsius = 0.0
@@ -73,5 +74,10 @@ fun List<WeatherData>.toAverageValues(): List<Double> {
             nightCelsius += weatherData.temperatureCelsius
         }
     }
-    return listOf(morningCelsius, dayCelsius, eveningCelsius, nightCelsius)
+    return listOf(
+        (morningCelsius/6).roundToInt(),
+        (dayCelsius/6).roundToInt(),
+        (eveningCelsius/6).roundToInt(),
+        (nightCelsius/6).roundToInt()
+    )
 }

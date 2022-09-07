@@ -55,4 +55,38 @@ class WeatherViewModel @Inject constructor(
             }
         }
     }
+
+    fun loadDataStock(){
+        viewModelScope.launch {
+            state = state.copy(
+                isLoading = true,
+                error = null,
+            )
+            locationTracker.getCurrentLocation()?.let { location ->
+                when (val result =
+                    repository.getDataForStock(location.latitude, location.longitude)) {
+                    is Resource.Success -> {
+                        state = state.copy(
+                            dataStock = result.data,
+                            isLoading = false,
+                            error = null
+                        )
+                    }
+                    is Resource.Error -> {
+                        state = state.copy(
+                            dataStock = null,
+                            isLoading = false,
+                            error = result.message
+                        )
+                    }
+                }
+            } ?: run {
+                Log.d("EEE","FAILED")
+                state =state.copy(
+                    isLoading =false,
+                    error = "Couldn't retrieve location.Make sure enable GPS"
+                )
+            }
+        }
+    }
 }

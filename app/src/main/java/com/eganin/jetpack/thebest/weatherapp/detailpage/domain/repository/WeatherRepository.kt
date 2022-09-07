@@ -5,5 +5,5 @@ import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.weather.WeatherIn
 
 interface WeatherRepository {
     suspend fun getWeatherData(lat: Double, long: Double): Resource<WeatherInfo>
-    suspend fun getDataForStock(lat: Double, long: Double) : Resource<List<Double>>
+    suspend fun getDataForStock(lat: Double, long: Double) : Resource<List<Int>>
 }

@@ -4,6 +4,7 @@ import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.weather.WeatherIn
 
 data class WeatherState(
     val weatherInfo: WeatherInfo? = null,
+    val dataStock : List<Int>? = null,
     val isLoading: Boolean = false,
     val error: String? = null
 )
