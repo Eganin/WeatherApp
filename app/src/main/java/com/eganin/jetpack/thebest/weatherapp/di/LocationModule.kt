@@ -1,7 +1,7 @@
 package com.eganin.jetpack.thebest.weatherapp.di
 
-import com.eganin.jetpack.thebest.weatherapp.data.location.DefaultLocationTracker
-import com.eganin.jetpack.thebest.weatherapp.domain.location.LocationTracker
+import com.eganin.jetpack.thebest.weatherapp.detailpage.data.location.DefaultLocationTracker
+import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.location.LocationTracker
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
