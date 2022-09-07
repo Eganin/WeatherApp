@@ -1,4 +1,4 @@
-package com.eganin.jetpack.thebest.weatherapp.presentation.ui.theme
+package com.eganin.jetpack.thebest.weatherapp.presentation.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
