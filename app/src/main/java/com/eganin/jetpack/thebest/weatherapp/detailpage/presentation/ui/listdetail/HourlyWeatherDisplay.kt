@@ -1,4 +1,4 @@
-package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui
+package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.listdetail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

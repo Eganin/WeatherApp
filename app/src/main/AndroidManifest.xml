@@ -20,7 +20,7 @@
         android:name=".WeatherApp"
         >
         <activity
-            android:name="com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.MainActivity"
+            android:name="com.eganin.jetpack.thebest.weatherapp.ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.WeatherApp">

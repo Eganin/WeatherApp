@@ -37,24 +37,24 @@ class DefaultLocationTracker @Inject constructor(
             return null
         }
 
-        return suspendCancellableCoroutine { cont ->
+        return suspendCancellableCoroutine { continuation ->
             locationClient.lastLocation.apply {
                 if(isComplete) {
                     if(isSuccessful) {
-                        cont.resume(result)
+                        continuation.resume(result)
                     } else {
-                        cont.resume(null)
+                        continuation.resume(null)
                     }
                     return@suspendCancellableCoroutine
                 }
                 addOnSuccessListener {
-                    cont.resume(it)
+                    continuation.resume(it)
                 }
                 addOnFailureListener {
-                    cont.resume(null)
+                    continuation.resume(null)
                 }
                 addOnCanceledListener {
-                    cont.cancel()
+                    continuation.cancel()
                 }
             }
         }

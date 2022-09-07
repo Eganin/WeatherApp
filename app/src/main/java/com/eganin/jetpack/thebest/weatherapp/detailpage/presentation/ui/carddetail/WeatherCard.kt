@@ -1,4 +1,4 @@
-package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui
+package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.carddetail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -16,6 +16,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eganin.jetpack.thebest.weatherapp.R
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherState
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
