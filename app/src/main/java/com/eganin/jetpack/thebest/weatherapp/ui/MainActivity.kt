@@ -22,6 +22,7 @@ import com.eganin.jetpack.thebest.weatherapp.common.domain.util.getThemeType
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherDetailPage
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherViewModel
 import com.eganin.jetpack.thebest.weatherapp.search.SearchPage
+import com.eganin.jetpack.thebest.weatherapp.search.SearchViewModel
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppCorners
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.WeatherAppTheme
@@ -40,6 +41,8 @@ class MainActivity : ComponentActivity() {
 
     private val weatherViewModel: WeatherViewModel by viewModels()
     private val weekListViewModel: WeekListViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModels()
+
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +101,7 @@ class MainActivity : ComponentActivity() {
                                     viewModel = weatherViewModel,
                                     navController = navController
                                 )
-                                2 -> SearchPage()
+                                2 -> SearchPage(searchViewModel = searchViewModel)
                             }
                         }
                         NavHost(

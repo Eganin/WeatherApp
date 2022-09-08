@@ -5,10 +5,14 @@ import com.eganin.jetpack.thebest.weatherapp.common.data.remote.WeatherApi
 import com.eganin.jetpack.thebest.weatherapp.search.data.remote.GeocodingApi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -34,15 +38,20 @@ object AppModule {
             .create()
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     @Provides
     @Singleton
     fun provideGeocodingApi(): GeocodingApi {
+        val json = Json {
+            ignoreUnknownKeys = true
+            //coerceInputValues = true
+        }
         val client = OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor())
             .build()
         return Retrofit.Builder()
-            .baseUrl("http://api.openweathermap.org/")
-            .addConverterFactory(MoshiConverterFactory.create())
+            .baseUrl("https://api.openweathermap.org/")
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .client(client)
             .build()
             .create()

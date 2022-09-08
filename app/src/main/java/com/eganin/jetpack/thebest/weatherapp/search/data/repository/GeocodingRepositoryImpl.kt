@@ -12,7 +12,7 @@ class GeocodingRepositoryImpl  @Inject constructor(
 ): GeocodingRepository {
     override suspend fun getGeoFromCity(cityName : String): GeocodingDto {
         return withContext(Dispatchers.IO){
-            geocodingApi.getCoordFromCity(cityName = cityName)
+            geocodingApi.getCoordFromCity(cityName = cityName).get(index = 0)
         }
     }
 }

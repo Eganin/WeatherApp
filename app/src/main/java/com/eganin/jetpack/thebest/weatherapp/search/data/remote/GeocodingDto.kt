@@ -1,10 +1,13 @@
 package com.eganin.jetpack.thebest.weatherapp.search.data.remote
 
 import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class GeocodingDto(
-    @field:Json(name = "lat")
+    @SerialName("lat")
     val latitude: Double,
-    @field:Json(name = "lon")
+    @SerialName("lon")
     val longitude: Double
 )
