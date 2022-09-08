@@ -89,13 +89,16 @@ class MainActivity : ComponentActivity() {
                             count = tabData.size,
                             state = pagerState,
                         ) { page ->
-                            when(page){
-                                0->WeekListPage(
+                            when (page) {
+                                0 -> WeekListPage(
                                     weekListViewModel = weekListViewModel,
                                     weatherViewModel = weatherViewModel
                                 )
-                                1->WeatherDetailPage(viewModel = weatherViewModel)
-                                2->WeatherDetailPage(viewModel = weatherViewModel)
+                                1 -> WeatherDetailPage(
+                                    viewModel = weatherViewModel,
+                                    navController = navController
+                                )
+                                2 -> SearchPage()
                             }
                         }
                         NavHost(

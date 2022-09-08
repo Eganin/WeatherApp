@@ -86,4 +86,7 @@ dependencies {
     // view pager dependency
     implementation "com.google.accompanist:accompanist-pager:0.26.2-beta"
     implementation "com.google.accompanist:accompanist-pager-indicators:0.26.2-beta"
+
+    implementation 'com.google.maps.android:maps-compose:2.5.3'
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
 }
