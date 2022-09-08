@@ -27,7 +27,7 @@ fun HourlyWeatherDisplay(
 ) {
     val formattedTime = remember(weatherData) {
         weatherData.time.format(
-            DateTimeFormatter.ofPattern("HH:mm")
+            DateTimeFormatter.ofPattern("HH")
         )
     }
     Column(
@@ -35,8 +35,9 @@ fun HourlyWeatherDisplay(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
+        formattedTime.toInt()
         Text(
-            text = formattedTime,
+            text = if(formattedTime.toInt() in 0..12) "$formattedTime AM" else "$formattedTime PM",
             color = AppTheme.colors.secondaryText,
             style = Typography.h6
         )

@@ -5,4 +5,6 @@
     <string name="night_stock_label">Night</string>
     <string name="day_stock_label">Day</string>
     <string name="evening_stock_label">Evening</string>
+    <string name="today_caption">Today</string>
+    <string name="search_button_sescription">Search Button</string>
 </resources>

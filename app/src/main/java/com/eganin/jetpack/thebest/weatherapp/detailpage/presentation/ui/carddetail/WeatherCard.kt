@@ -11,11 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.eganin.jetpack.thebest.weatherapp.R
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherState
-import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.weathercard.StockChart
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.chart.ChartWeather
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.Typography
 import java.time.format.DateTimeFormatter
@@ -40,7 +41,7 @@ fun WeatherCard(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Today ${
+                    text = "${stringResource(R.string.today_caption)} ${
                         data.time.format(
                             DateTimeFormatter.ofPattern("HH:mm")
                         )
@@ -92,7 +93,7 @@ fun WeatherCard(
                     )
                 }
                 state.dataStock?.let {
-                    StockChart(info =it)
+                    ChartWeather(info = it)
                 }
             }
         }

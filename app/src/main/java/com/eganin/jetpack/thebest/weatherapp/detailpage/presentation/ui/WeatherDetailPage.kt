@@ -1,5 +1,6 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.carddetail.WeatherCard
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.listdetail.WeatherForecast
+import com.eganin.jetpack.thebest.weatherapp.search.SearchWidget
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 
 @Composable
@@ -32,6 +34,11 @@ fun WeatherDetailPage(viewModel: WeatherViewModel) {
             item { Spacer(modifier = Modifier.height(16.dp)) }
             item {
                 WeatherForecast(state = viewModel.state)
+            }
+            item {
+                SearchWidget(modifier = Modifier.padding(16.dp)) {
+                    Log.d("EEE","CLICK")
+                }
             }
         }
         if (viewModel.state.isLoading) {

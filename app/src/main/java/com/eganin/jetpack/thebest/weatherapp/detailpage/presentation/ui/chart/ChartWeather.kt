@@ -1,10 +1,8 @@
-package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.weathercard
+package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.chart
 
 import android.graphics.Paint
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -14,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
@@ -24,11 +21,9 @@ import androidx.compose.ui.unit.sp
 import com.eganin.jetpack.thebest.weatherapp.R
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.Typography
-import kotlin.math.min
-import kotlin.math.roundToInt
 
 @Composable
-fun StockChart(info: List<Int>, modifier: Modifier = Modifier) {
+fun ChartWeather(info: List<Int>, modifier: Modifier = Modifier) {
     Card(
         backgroundColor = AppTheme.colors.secondaryBackground,
         shape = RoundedCornerShape(10.dp),
@@ -47,7 +42,10 @@ fun StockChart(info: List<Int>, modifier: Modifier = Modifier) {
                     .padding(start = 16.dp, top = 16.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            LinearTransactionsChart(data = info)
+            LinearTransactionsChart(
+                data = info,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
         }
 
     }
@@ -62,10 +60,10 @@ fun LinearTransactionsChart(
     val density = LocalDensity.current
     val colorStock = AppTheme.colors.tintColor
     val colorCircle = AppTheme.colors.primaryText
-    val morningLabel =stringResource(R.string.morning_stock_label)
-    val nightLabel =stringResource(R.string.night_stock_label)
-    val dayLabel =stringResource(R.string.day_stock_label)
-    val eveningLabel =stringResource(R.string.evening_stock_label)
+    val morningLabel = stringResource(R.string.morning_stock_label)
+    val nightLabel = stringResource(R.string.night_stock_label)
+    val dayLabel = stringResource(R.string.day_stock_label)
+    val eveningLabel = stringResource(R.string.evening_stock_label)
     val textPaint = remember(density) {
         Paint().apply {
             color = android.graphics.Color.BLACK
@@ -115,7 +113,7 @@ fun LinearTransactionsChart(
                 lastY = currentY
                 drawCircle(
                     brush = Brush.radialGradient(
-                        colors = listOf(colorCircle,colorCircle),
+                        colors = listOf(colorCircle, colorCircle),
                         radius = radiusCircle
                     ),
                     radius = radiusCircle,
@@ -156,7 +154,7 @@ fun LinearTransactionsChart(
                 )
                 drawCircle(
                     brush = Brush.radialGradient(
-                        colors = listOf(colorCircle,colorCircle),
+                        colors = listOf(colorCircle, colorCircle),
                         radius = radiusCircle
                     ),
                     radius = radiusCircle,
@@ -195,9 +193,9 @@ fun LinearTransactionsChart(
                     strokeWidth = Stroke.DefaultMiter
                 )
             } else {
-                val currentY = if(index ==2){
+                val currentY = if (index == 2) {
                     -value.dp.toPx() + 32.dp.toPx()
-                }else{
+                } else {
                     -value.dp.toPx() + 16.dp.toPx()
                 }
                 xCounter += xCounterStep
@@ -215,7 +213,7 @@ fun LinearTransactionsChart(
                 )
                 drawCircle(
                     brush = Brush.radialGradient(
-                        colors = listOf(colorCircle,colorCircle),
+                        colors = listOf(colorCircle, colorCircle),
                         radius = radiusCircle
                     ),
                     radius = radiusCircle,
