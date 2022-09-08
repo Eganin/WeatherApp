@@ -24,7 +24,7 @@ fun SearchWidget(modifier: Modifier = Modifier, onClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Divider(
-            color = AppTheme.colors.cardBackground.copy(alpha = 0.5f),
+            color = AppTheme.colors.primaryText.copy(alpha = 0.5f),
             thickness = 2.dp,
             modifier = Modifier
                 .weight(1f)
@@ -48,7 +48,7 @@ fun SearchWidget(modifier: Modifier = Modifier, onClick: () -> Unit) {
             }
         }
         Divider(
-            color = AppTheme.colors.cardBackground.copy(alpha = 0.5f),
+            color = AppTheme.colors.primaryText.copy(alpha = 0.5f),
             thickness = 2.dp,
             modifier = Modifier
                 .weight(1f)

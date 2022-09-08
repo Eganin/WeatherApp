@@ -12,13 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.carddetail.WeatherCard
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.listdetail.WeatherForecast
 import com.eganin.jetpack.thebest.weatherapp.search.SearchWidget
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 
 @Composable
-fun WeatherDetailPage(viewModel: WeatherViewModel) {
+fun WeatherDetailPage(viewModel: WeatherViewModel = hiltViewModel()) {
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier
@@ -36,8 +37,15 @@ fun WeatherDetailPage(viewModel: WeatherViewModel) {
                 WeatherForecast(state = viewModel.state)
             }
             item {
-                SearchWidget(modifier = Modifier.padding(16.dp)) {
-                    Log.d("EEE","CLICK")
+                SearchWidget(
+                    modifier = Modifier.padding(
+                        top = 16.dp,
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = 70.dp
+                    )
+                ) {
+                    Log.d("EEE", "CLICK")
                 }
             }
         }
