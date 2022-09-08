@@ -2,6 +2,7 @@ package com.eganin.jetpack.thebest.weatherapp.di
 
 import android.app.Application
 import com.eganin.jetpack.thebest.weatherapp.common.data.remote.WeatherApi
+import com.eganin.jetpack.thebest.weatherapp.search.data.remote.GeocodingApi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.Module
@@ -27,6 +28,20 @@ object AppModule {
             .build()
         return Retrofit.Builder()
             .baseUrl("https://api.open-meteo.com/")
+            .addConverterFactory(MoshiConverterFactory.create())
+            .client(client)
+            .build()
+            .create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGeocodingApi(): GeocodingApi {
+        val client = OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor())
+            .build()
+        return Retrofit.Builder()
+            .baseUrl("http://api.openweathermap.org/")
             .addConverterFactory(MoshiConverterFactory.create())
             .client(client)
             .build()
