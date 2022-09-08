@@ -1,6 +1,7 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.chart
 
 import android.graphics.Paint
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +18,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.eganin.jetpack.thebest.weatherapp.R
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
@@ -30,7 +32,7 @@ fun ChartWeather(info: List<Int>, modifier: Modifier = Modifier) {
         modifier = modifier
             .padding(top = 16.dp)
             .fillMaxWidth()
-            .height(200.dp)
+            .height(180.dp)
     ) {
         Column {
             Text(
@@ -56,6 +58,16 @@ fun LinearTransactionsChart(
     modifier: Modifier = Modifier,
     data: List<Int>
 ) {
+    val newData = if (data.filter { it >= 1 }.size == 4) {
+        data.map { -it }
+    } else {
+        data
+    }
+    val temperatureSign = if (data.filter { it >= 1 }.size == 4) {
+        "-"
+    } else {
+        "+"
+    }
 
     val density = LocalDensity.current
     val colorStock = AppTheme.colors.tintColor
@@ -80,36 +92,38 @@ fun LinearTransactionsChart(
             textSize = density.run { 14.sp.toPx() }
         }
     }
+    val verticalPaddingCanvas = -(newData.minBy { it }.dp * 6)
     Canvas(
         modifier = modifier
-            .padding(vertical = 20.dp)
+            .padding(top = verticalPaddingCanvas)
             .fillMaxSize()
     ) {
-        var xCounter = 48.dp
+        var xCounter = 45.dp
         var lastX = 0.0f
         var lastY = 0.0f
-        val minY = data.minBy { it }.dp.toPx()
-        val maxY = data.maxBy { it }.dp.toPx()
-        val coordYLabel = minY + 55.dp.toPx()
-        val coordYTemp = minY + 80.dp.toPx()
-        val xCounterStep = 210f.toDp()
+        val minY =(newData.maxBy { it }.dp * 5).toPx()
+        val maxY =(newData.minBy { it }.dp * 5).toPx()
+        val coordYLabel = minY + 35.dp.toPx()
+        val coordYTemp = minY + 60.dp.toPx()
+        val xCounterStep = 220f.toDp()
         val radiusCircle = 17f
-        data.forEachIndexed { index, value ->
+        newData.forEachIndexed { index, value ->
             if (index == 0) {
-                val currentY = value.dp.toPx() - 16.dp.toPx()
+                val currentY = (value.dp * 5).toPx()
+                val currentX = xCounter.toPx()
                 drawLine(
                     start = Offset(
                         x = 0f,
-                        y = minY + 16.dp.toPx()
+                        y = minY
                     ),
                     end = Offset(
-                        x = xCounter.toPx(),
+                        x = currentX,
                         y = currentY
                     ),
                     color = colorStock,
                     strokeWidth = Stroke.DefaultMiter
                 )
-                lastX = xCounter.toPx()
+                lastX = currentX
                 lastY = currentY
                 drawCircle(
                     brush = Brush.radialGradient(
@@ -118,35 +132,36 @@ fun LinearTransactionsChart(
                     ),
                     radius = radiusCircle,
                     center = Offset(
-                        x = xCounter.toPx(),
+                        x = currentX,
                         y = currentY
                     )
                 )
                 drawContext.canvas.nativeCanvas.apply {
                     drawText(
                         morningLabel,
-                        xCounter.toPx(),
+                        currentX,
                         coordYLabel,
                         textPaintLabel
                     )
                     drawText(
-                        "${value}C",
-                        xCounter.toPx(),
+                        "$temperatureSign${-value}C",
+                        currentX,
                         coordYTemp,
                         textPaint
                     )
                 }
 
-            } else if (index == data.size - 1) {
-                val currentY = value.dp.toPx() + 25.dp.toPx()
+            } else if (index == newData.size - 1) {
                 xCounter += xCounterStep
+                val currentY = (value.dp * 5).toPx()
+                val currentX = xCounter.toPx()
                 drawLine(
                     start = Offset(
                         x = lastX,
                         y = lastY
                     ),
                     end = Offset(
-                        x = xCounter.toPx(),
+                        x = currentX,
                         y = currentY
                     ),
                     color = colorStock,
@@ -159,12 +174,11 @@ fun LinearTransactionsChart(
                     ),
                     radius = radiusCircle,
                     center = Offset(
-                        x = xCounter.toPx(),
+                        x = currentX,
                         y = currentY
                     )
                 )
-                lastX = xCounter.toPx()
-                lastY = currentY
+
                 drawContext.canvas.nativeCanvas.apply {
                     drawText(
                         nightLabel,
@@ -173,39 +187,35 @@ fun LinearTransactionsChart(
                         textPaintLabel
                     )
                     drawText(
-                        "${value}C",
+                        "$temperatureSign${-value}C",
                         xCounter.toPx(),
                         coordYTemp,
                         textPaint
                     )
                 }
-                xCounter += xCounterStep
                 drawLine(
                     start = Offset(
-                        x = lastX,
-                        y = lastY
+                        x = currentX,
+                        y = currentY
                     ),
                     end = Offset(
-                        x = xCounter.toPx(),
+                        x = currentX + xCounterStep.toPx(),
                         y = maxY
                     ),
                     color = colorStock,
                     strokeWidth = Stroke.DefaultMiter
                 )
             } else {
-                val currentY = if (index == 2) {
-                    -value.dp.toPx() + 32.dp.toPx()
-                } else {
-                    -value.dp.toPx() + 16.dp.toPx()
-                }
                 xCounter += xCounterStep
+                val currentY = (value.dp * 5).toPx()
+                val currentX = xCounter.toPx()
                 drawLine(
                     start = Offset(
                         x = lastX,
                         y = lastY
                     ),
                     end = Offset(
-                        x = xCounter.toPx(),
+                        x = currentX,
                         y = currentY
                     ),
                     color = colorStock,
@@ -218,32 +228,32 @@ fun LinearTransactionsChart(
                     ),
                     radius = radiusCircle,
                     center = Offset(
-                        x = xCounter.toPx(),
+                        x = currentX,
                         y = currentY
                     )
                 )
-                lastX = xCounter.toPx()
+                lastX = currentX
                 lastY = currentY
 
                 drawContext.canvas.nativeCanvas.apply {
                     if (index == 1) {
                         drawText(
                             dayLabel,
-                            xCounter.toPx(),
+                            currentX,
                             coordYLabel,
                             textPaintLabel
                         )
                     } else {
                         drawText(
                             eveningLabel,
-                            xCounter.toPx(),
+                            currentX,
                             coordYLabel,
                             textPaintLabel
                         )
                     }
                     drawText(
-                        "${value}C",
-                        xCounter.toPx(),
+                        "$temperatureSign${-value}C",
+                        currentX,
                         coordYTemp,
                         textPaint
                     )

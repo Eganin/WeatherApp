@@ -26,14 +26,16 @@ import com.eganin.jetpack.thebest.weatherapp.search.SearchPage
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppCorners
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.WeatherAppTheme
-import com.eganin.jetpack.thebest.weatherapp.weeklist.WeekListPage
+import com.eganin.jetpack.thebest.weatherapp.weeklist.ui.WeekListPage
+import com.eganin.jetpack.thebest.weatherapp.weeklist.WeekListViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: WeatherViewModel by viewModels()
+    private val weatherViewModel: WeatherViewModel by viewModels()
+    private val weekListViewModel: WeekListViewModel by viewModels()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,8 +43,8 @@ class MainActivity : ComponentActivity() {
         permissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) {
-            viewModel.loadWeatherInfo()
-            viewModel.loadDataStock()
+            weatherViewModel.loadWeatherInfo()
+            weatherViewModel.loadDataStock()
         }
         permissionLauncher.launch(
             arrayOf(
@@ -70,7 +72,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Scaffold(
                         bottomBar = {
-                            BottomBar(navController=navController)
+                            BottomBar(navController = navController)
                         }
                     ) {
                         NavHost(
@@ -78,13 +80,16 @@ class MainActivity : ComponentActivity() {
                             startDestination = DestinationsPage.Home.name
                         ) {
                             composable(DestinationsPage.Home.name) {
-                                WeatherDetailPage(viewModel = viewModel)
+                                WeatherDetailPage(viewModel = weatherViewModel)
                             }
                             composable(DestinationsPage.Search.name) {
                                 SearchPage()
                             }
                             composable(DestinationsPage.WeekList.name) {
-                                WeekListPage(viewModel = viewModel)
+                                WeekListPage(
+                                    weekListViewModel = weekListViewModel,
+                                    weatherViewModel = weatherViewModel
+                                )
                             }
                         }
                     }
