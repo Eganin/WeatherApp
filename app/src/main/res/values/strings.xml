@@ -7,4 +7,11 @@
     <string name="evening_stock_label">Evening</string>
     <string name="today_caption">Today</string>
     <string name="search_button_sescription">Search Button</string>
+    <string name="monday_label">Monday</string>
+    <string name="tuesday_label">Tuesday</string>
+    <string name="wednesday_label">Wednesday</string>
+    <string name="thursday_label">Thursday</string>
+    <string name="friday_label">Friday</string>
+    <string name="saturday_label">Saturday</string>
+    <string name="sunday_label">Sunday</string>
 </resources>
