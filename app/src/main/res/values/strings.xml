@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">WeatherApp</string>
+    <string name="temperature_stock_label">Temperature</string>
+    <string name="morning_stock_label">Morning</string>
+    <string name="night_stock_label">Night</string>
+    <string name="day_stock_label">Day</string>
+    <string name="evening_stock_label">Evening</string>
 </resources>

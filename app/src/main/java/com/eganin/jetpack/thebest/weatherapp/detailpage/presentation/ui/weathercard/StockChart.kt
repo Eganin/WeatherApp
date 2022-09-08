@@ -18,26 +18,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.eganin.jetpack.thebest.weatherapp.R
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.Typography
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 @Composable
-fun StockChart(info : List<Int>,modifier: Modifier = Modifier) {
-    Log.d("EEE",info.toString())
+fun StockChart(info: List<Int>, modifier: Modifier = Modifier) {
     Card(
         backgroundColor = AppTheme.colors.secondaryBackground,
         shape = RoundedCornerShape(10.dp),
         modifier = modifier
-            .padding(16.dp)
+            .padding(top = 16.dp)
             .fillMaxWidth()
-            .height(170.dp)
+            .height(200.dp)
     ) {
         Column {
             Text(
-                text = "Temperature",
+                text = stringResource(R.string.temperature_stock_label),
                 style = Typography.h5,
                 color = AppTheme.colors.primaryText,
                 modifier = Modifier
@@ -54,16 +56,22 @@ fun StockChart(info : List<Int>,modifier: Modifier = Modifier) {
 @Composable
 fun LinearTransactionsChart(
     modifier: Modifier = Modifier,
-    data : List<Int>
+    data: List<Int>
 ) {
+
     val density = LocalDensity.current
     val colorStock = AppTheme.colors.tintColor
+    val colorCircle = AppTheme.colors.primaryText
+    val morningLabel =stringResource(R.string.morning_stock_label)
+    val nightLabel =stringResource(R.string.night_stock_label)
+    val dayLabel =stringResource(R.string.day_stock_label)
+    val eveningLabel =stringResource(R.string.evening_stock_label)
     val textPaint = remember(density) {
         Paint().apply {
             color = android.graphics.Color.BLACK
             textAlign = Paint.Align.CENTER
             // sp to px
-            textSize = density.run { 14.sp.toPx() }
+            textSize = density.run { 18.sp.toPx() }
         }
     }
     val textPaintLabel = remember(density) {
@@ -71,57 +79,69 @@ fun LinearTransactionsChart(
             color = android.graphics.Color.BLACK
             textAlign = Paint.Align.CENTER
             // sp to px
-            textSize = density.run { 9.sp.toPx() }
+            textSize = density.run { 14.sp.toPx() }
         }
     }
-    Canvas(modifier = modifier.padding(vertical = 16.dp).fillMaxSize()) {
-        var xCounter = 30.dp
+    Canvas(
+        modifier = modifier
+            .padding(vertical = 20.dp)
+            .fillMaxSize()
+    ) {
+        var xCounter = 48.dp
         var lastX = 0.0f
         var lastY = 0.0f
-        val minY = data.minBy { it }.toFloat()
-        val maxY= data.maxBy { it }.toFloat()
+        val minY = data.minBy { it }.dp.toPx()
+        val maxY = data.maxBy { it }.dp.toPx()
+        val coordYLabel = minY + 55.dp.toPx()
+        val coordYTemp = minY + 80.dp.toPx()
+        val xCounterStep = 210f.toDp()
+        val radiusCircle = 17f
         data.forEachIndexed { index, value ->
-            if(index ==0){
+            if (index == 0) {
+                val currentY = value.dp.toPx() - 16.dp.toPx()
                 drawLine(
                     start = Offset(
                         x = 0f,
-                        y = minY+16.dp.toPx()
+                        y = minY + 16.dp.toPx()
                     ),
                     end = Offset(
                         x = xCounter.toPx(),
-                        y = value.toFloat()-16.dp.toPx()
+                        y = currentY
                     ),
                     color = colorStock,
                     strokeWidth = Stroke.DefaultMiter
                 )
                 lastX = xCounter.toPx()
-                lastY=value.toFloat()-16.dp.toPx()
+                lastY = currentY
                 drawCircle(
                     brush = Brush.radialGradient(
-                        colors = listOf(Color.White,Color.White),
-                        radius = 15f
+                        colors = listOf(colorCircle,colorCircle),
+                        radius = radiusCircle
                     ),
-                    radius = 15f,
-                    center=Offset(x = xCounter.toPx(),
-                        y = value.toFloat()-16.dp.toPx())
+                    radius = radiusCircle,
+                    center = Offset(
+                        x = xCounter.toPx(),
+                        y = currentY
+                    )
                 )
                 drawContext.canvas.nativeCanvas.apply {
                     drawText(
-                        "Morning",
+                        morningLabel,
                         xCounter.toPx(),
-                        minY+50.dp.toPx(),
+                        coordYLabel,
                         textPaintLabel
                     )
                     drawText(
                         "${value}C",
                         xCounter.toPx(),
-                        minY+70.dp.toPx(),
+                        coordYTemp,
                         textPaint
                     )
                 }
 
-            }else if(index == data.size-1){
-                xCounter+=210f.toDp()
+            } else if (index == data.size - 1) {
+                val currentY = value.dp.toPx() + 25.dp.toPx()
+                xCounter += xCounterStep
                 drawLine(
                     start = Offset(
                         x = lastX,
@@ -129,37 +149,39 @@ fun LinearTransactionsChart(
                     ),
                     end = Offset(
                         x = xCounter.toPx(),
-                        y = value.toFloat()+16.dp.toPx()
+                        y = currentY
                     ),
                     color = colorStock,
                     strokeWidth = Stroke.DefaultMiter
                 )
                 drawCircle(
                     brush = Brush.radialGradient(
-                        colors = listOf(Color.White,Color.White),
-                        radius = 15f
+                        colors = listOf(colorCircle,colorCircle),
+                        radius = radiusCircle
                     ),
-                    radius = 15f,
-                    center=Offset(x = xCounter.toPx(),
-                        y = value.toFloat()+16.dp.toPx())
+                    radius = radiusCircle,
+                    center = Offset(
+                        x = xCounter.toPx(),
+                        y = currentY
+                    )
                 )
-                lastX=xCounter.toPx()
-                lastY=value.toFloat()+16.dp.toPx()
+                lastX = xCounter.toPx()
+                lastY = currentY
                 drawContext.canvas.nativeCanvas.apply {
                     drawText(
-                        "Night",
+                        nightLabel,
                         xCounter.toPx(),
-                        minY+50.dp.toPx(),
+                        coordYLabel,
                         textPaintLabel
                     )
                     drawText(
                         "${value}C",
                         xCounter.toPx(),
-                        minY+70.dp.toPx(),
+                        coordYTemp,
                         textPaint
                     )
                 }
-                xCounter+=210f.toDp()
+                xCounter += xCounterStep
                 drawLine(
                     start = Offset(
                         x = lastX,
@@ -172,8 +194,13 @@ fun LinearTransactionsChart(
                     color = colorStock,
                     strokeWidth = Stroke.DefaultMiter
                 )
-            }else {
-                xCounter+=210f.toDp()
+            } else {
+                val currentY = if(index ==2){
+                    -value.dp.toPx() + 32.dp.toPx()
+                }else{
+                    -value.dp.toPx() + 16.dp.toPx()
+                }
+                xCounter += xCounterStep
                 drawLine(
                     start = Offset(
                         x = lastX,
@@ -181,43 +208,45 @@ fun LinearTransactionsChart(
                     ),
                     end = Offset(
                         x = xCounter.toPx(),
-                        y = value.toFloat()+16.dp.toPx()
+                        y = currentY
                     ),
                     color = colorStock,
                     strokeWidth = Stroke.DefaultMiter
                 )
                 drawCircle(
                     brush = Brush.radialGradient(
-                        colors = listOf(Color.White,Color.White),
-                        radius = 15f
+                        colors = listOf(colorCircle,colorCircle),
+                        radius = radiusCircle
                     ),
-                    radius = 15f,
-                    center=Offset(x = xCounter.toPx(),
-                        y = value.toFloat()+16.dp.toPx())
+                    radius = radiusCircle,
+                    center = Offset(
+                        x = xCounter.toPx(),
+                        y = currentY
+                    )
                 )
-                lastX=xCounter.toPx()
-                lastY=value.toFloat()+16.dp.toPx()
+                lastX = xCounter.toPx()
+                lastY = currentY
 
                 drawContext.canvas.nativeCanvas.apply {
-                    if(index==1){
+                    if (index == 1) {
                         drawText(
-                            "Day",
+                            dayLabel,
                             xCounter.toPx(),
-                            minY+50.dp.toPx(),
+                            coordYLabel,
                             textPaintLabel
                         )
-                    }else{
+                    } else {
                         drawText(
-                            "Evening",
+                            eveningLabel,
                             xCounter.toPx(),
-                            minY+50.dp.toPx(),
+                            coordYLabel,
                             textPaintLabel
                         )
                     }
                     drawText(
                         "${value}C",
                         xCounter.toPx(),
-                        minY+70.dp.toPx(),
+                        coordYTemp,
                         textPaint
                     )
                 }
