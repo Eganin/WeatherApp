@@ -1,7 +1,7 @@
 package com.eganin.jetpack.thebest.weatherapp.di
 
 import android.app.Application
-import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.WeatherApi
+import com.eganin.jetpack.thebest.weatherapp.common.data.remote.WeatherApi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.Module
@@ -38,4 +38,5 @@ object AppModule {
     fun provideFusedLocationProviderClient(app: Application): FusedLocationProviderClient {
         return LocationServices.getFusedLocationProviderClient(app)
     }
+
 }

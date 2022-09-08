@@ -1,4 +1,4 @@
-package com.eganin.jetpack.thebest.weatherapp.detailpage.domain.location
+package com.eganin.jetpack.thebest.weatherapp.common.domain.location
 
 import android.location.Location
 

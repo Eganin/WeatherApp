@@ -1,4 +1,4 @@
-package com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote
+package com.eganin.jetpack.thebest.weatherapp.common.data.remote
 
 import com.squareup.moshi.Json
 

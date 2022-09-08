@@ -1,7 +1,7 @@
 package com.eganin.jetpack.thebest.weatherapp.di
 
-import com.eganin.jetpack.thebest.weatherapp.detailpage.data.repository.WeatherRepositoryImpl
-import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.WeatherRepository
+import com.eganin.jetpack.thebest.weatherapp.common.data.repository.WeatherRepositoryImpl
+import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.WeatherRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

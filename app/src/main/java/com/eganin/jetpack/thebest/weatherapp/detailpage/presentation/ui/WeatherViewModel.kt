@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.location.LocationTracker
-import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.WeatherRepository
-import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.util.Resource
+import com.eganin.jetpack.thebest.weatherapp.common.domain.location.LocationTracker
+import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.WeatherRepository
+import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -57,6 +57,40 @@ class WeatherViewModel @Inject constructor(
     }
 
     fun loadDataStock(){
+        viewModelScope.launch {
+            state = state.copy(
+                isLoading = true,
+                error = null,
+            )
+            locationTracker.getCurrentLocation()?.let { location ->
+                when (val result =
+                    repository.getDataForStock(location.latitude, location.longitude)) {
+                    is Resource.Success -> {
+                        state = state.copy(
+                            dataStock = result.data,
+                            isLoading = false,
+                            error = null
+                        )
+                    }
+                    is Resource.Error -> {
+                        state = state.copy(
+                            dataStock = null,
+                            isLoading = false,
+                            error = result.message
+                        )
+                    }
+                }
+            } ?: run {
+                Log.d("EEE","FAILED")
+                state =state.copy(
+                    isLoading =false,
+                    error = "Couldn't retrieve location.Make sure enable GPS"
+                )
+            }
+        }
+    }
+
+    fun loadWeatherDataForEveryDay(){
         viewModelScope.launch {
             state = state.copy(
                 isLoading = true,

@@ -1,4 +1,4 @@
-package com.eganin.jetpack.thebest.weatherapp.detailpage.domain.util
+package com.eganin.jetpack.thebest.weatherapp.common.domain.util
 
 import java.time.LocalDateTime
 

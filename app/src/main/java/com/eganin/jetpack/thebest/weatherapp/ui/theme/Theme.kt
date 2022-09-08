@@ -1,11 +1,10 @@
 package com.eganin.jetpack.thebest.weatherapp.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.unit.dp
-import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.util.ThemeType
+import com.eganin.jetpack.thebest.weatherapp.common.domain.util.ThemeType
 
 @Composable
 fun WeatherAppTheme(

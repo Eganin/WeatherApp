@@ -1,10 +1,10 @@
-package com.eganin.jetpack.thebest.weatherapp.detailpage.data.mapper
+package com.eganin.jetpack.thebest.weatherapp.common.data.mapper
 
-import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.WeatherDataDto
-import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.WeatherDto
-import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.weather.WeatherData
-import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.weather.WeatherInfo
-import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.weather.WeatherType
+import com.eganin.jetpack.thebest.weatherapp.common.data.remote.WeatherDataDto
+import com.eganin.jetpack.thebest.weatherapp.common.data.remote.WeatherDto
+import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData
+import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherInfo
+import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherType
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt

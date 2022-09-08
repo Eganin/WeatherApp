@@ -31,7 +31,7 @@ fun SearchWidget(modifier: Modifier = Modifier, onClick: () -> Unit) {
                 .padding(end = 5.dp)
         )
         Card(
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(20.dp),
             modifier = Modifier.clickable { onClick() }
         ) {
             Box(

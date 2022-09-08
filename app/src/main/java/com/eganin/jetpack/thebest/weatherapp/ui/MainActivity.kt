@@ -19,13 +19,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.util.getThemeType
+import com.eganin.jetpack.thebest.weatherapp.common.domain.util.getThemeType
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherDetailPage
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherViewModel
 import com.eganin.jetpack.thebest.weatherapp.search.SearchPage
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppCorners
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.WeatherAppTheme
+import com.eganin.jetpack.thebest.weatherapp.weeklist.WeekListPage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -83,7 +84,7 @@ class MainActivity : ComponentActivity() {
                                 SearchPage()
                             }
                             composable(DestinationsPage.WeekList.name) {
-
+                                WeekListPage(viewModel = viewModel)
                             }
                         }
                     }

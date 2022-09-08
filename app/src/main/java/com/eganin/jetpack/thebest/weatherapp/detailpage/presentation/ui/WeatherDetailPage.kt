@@ -19,7 +19,7 @@ import com.eganin.jetpack.thebest.weatherapp.search.SearchWidget
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 
 @Composable
-fun WeatherDetailPage(viewModel: WeatherViewModel = hiltViewModel()) {
+fun WeatherDetailPage(viewModel: WeatherViewModel) {
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier
