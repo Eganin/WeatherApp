@@ -2,6 +2,7 @@ package com.eganin.jetpack.thebest.weatherapp.ui
 
 import android.Manifest
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -10,10 +11,8 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -28,9 +27,14 @@ import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.WeatherAppTheme
 import com.eganin.jetpack.thebest.weatherapp.weeklist.ui.WeekListPage
 import com.eganin.jetpack.thebest.weatherapp.weeklist.WeekListViewModel
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalPagerApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -75,21 +79,43 @@ class MainActivity : ComponentActivity() {
                             BottomBar(navController = navController)
                         }
                     ) {
+                        val tabData = listOf(
+                            DestinationsPage.WeekList.name,
+                            DestinationsPage.Home.name,
+                            DestinationsPage.Search.name,
+                        )
+                        val pagerState = rememberPagerState(initialPage = 1)
+                        HorizontalPager(
+                            count = tabData.size,
+                            state = pagerState,
+                        ) { page ->
+                            when(page){
+                                0->WeekListPage(
+                                    weekListViewModel = weekListViewModel,
+                                    weatherViewModel = weatherViewModel
+                                )
+                                1->WeatherDetailPage(viewModel = weatherViewModel)
+                                2->WeatherDetailPage(viewModel = weatherViewModel)
+                            }
+                        }
                         NavHost(
                             navController = navController,
                             startDestination = DestinationsPage.Home.name
                         ) {
                             composable(DestinationsPage.Home.name) {
-                                WeatherDetailPage(viewModel = weatherViewModel)
+                                rememberCoroutineScope().launch {
+                                    pagerState.scrollToPage(page = 1)
+                                }
                             }
                             composable(DestinationsPage.Search.name) {
-                                SearchPage()
+                                rememberCoroutineScope().launch {
+                                    pagerState.scrollToPage(page = 2)
+                                }
                             }
                             composable(DestinationsPage.WeekList.name) {
-                                WeekListPage(
-                                    weekListViewModel = weekListViewModel,
-                                    weatherViewModel = weatherViewModel
-                                )
+                                rememberCoroutineScope().launch {
+                                    pagerState.scrollToPage(page = 0)
+                                }
                             }
                         }
                     }

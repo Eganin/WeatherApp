@@ -29,14 +29,16 @@ fun WeekListPage(weekListViewModel: WeekListViewModel, weatherViewModel: Weather
                 state = weatherViewModel.state,
                 //modifier = Modifier.background(AppTheme.colors.cardBackground)
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(22.dp))
             weekListViewModel.state.info?.let { info ->
-                LazyColumn{
-                    items(info.size){ indexDay ->
+                LazyColumn {
+                    items(info.size) { indexDay ->
                         info.forEach { weatherData ->
                             DailyWeatherDisplay(
                                 weatherData = weatherData.value[12],
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(6.dp),
                                 indexDay = indexDay
                             )
                         }
