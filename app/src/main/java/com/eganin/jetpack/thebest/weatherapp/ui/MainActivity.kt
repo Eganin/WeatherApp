@@ -60,14 +60,6 @@ class MainActivity : ComponentActivity() {
             WeatherAppTheme(
                 themeType = getThemeType()
             ) {
-                val systemUiController = rememberSystemUiController()
-                val statusBarColor = AppTheme.colors.cardBackground
-                SideEffect {
-                    // setup status bar
-                    systemUiController.apply {
-                        setSystemBarsColor(color = statusBarColor)
-                    }
-                }
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = AppTheme.colors.primaryBackground,

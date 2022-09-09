@@ -14,4 +14,5 @@
     <string name="friday_label">Friday</string>
     <string name="saturday_label">Saturday</string>
     <string name="sunday_label">Sunday</string>
+    <string name="mountain_description">Mountain</string>
 </resources>

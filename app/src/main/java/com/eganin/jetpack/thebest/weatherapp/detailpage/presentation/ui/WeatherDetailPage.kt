@@ -41,6 +41,7 @@ fun WeatherDetailPage(viewModel: WeatherViewModel) {
         ) {
             BackdropScaffold(
                 appBar = {},
+                modifier = Modifier.background(AppTheme.colors.cardBackground),
                 frontLayerScrimColor = Color.Transparent,
                 backLayerBackgroundColor = Color.Transparent,
                 frontLayerElevation = 5.dp,
