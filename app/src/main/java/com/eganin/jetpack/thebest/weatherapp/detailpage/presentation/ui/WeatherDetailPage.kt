@@ -1,10 +1,14 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -23,11 +27,9 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WeatherDetailPage(viewModel: WeatherViewModel) {
-
-    var isVisibleSearchField by rememberSaveable { mutableStateOf(false) }
-    val stateLazyColumn = rememberLazyListState()
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = viewModel.state.isRefreshing)
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -36,49 +38,32 @@ fun WeatherDetailPage(viewModel: WeatherViewModel) {
             onRefresh = {
                 viewModel.onEvent(DetailPageEvent.Refresh)
             }
-        ){
-            LazyColumn(
-                state = stateLazyColumn,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(AppTheme.colors.primaryBackground)
-            ) {
-                if (isVisibleSearchField) {
-                    item {
-                        rememberCoroutineScope().launch {
-                            stateLazyColumn.animateScrollToItem(index = 0)
+        ) {
+            BackdropScaffold(
+                appBar = {},
+                frontLayerScrimColor = Color.Transparent,
+                backLayerBackgroundColor = Color.Transparent,
+                frontLayerElevation = 5.dp,
+                frontLayerShape = RoundedCornerShape(
+                    topStart = 10.dp,
+                    topEnd = 10.dp,
+                    bottomStart = 0.dp,
+                    bottomEnd = 0.dp
+                ),
+                backLayerContent = {
+                    viewModel.state.weatherInfo?.currentWeatherData?.let { weatherData ->
+                        viewModel.state.sunsetAndSunriseTime?.let { sunsetAndSunriseTime ->
+                            DynamicWeatherSection(
+                                info = weatherData,
+                                sunsetAndSunriseTimeData = sunsetAndSunriseTime
+                            )
                         }
-                        SearchField(viewModel = viewModel)
                     }
+                },
+                frontLayerContent = {
+                    WeatherDetailPageLazyColumn(viewModel = viewModel)
                 }
-                item {
-                    viewModel.state.weatherInfo?.currentWeatherData?.let {
-                        DynamicWeatherSection(info = it)
-                    }
-                }
-                item {
-                    WeatherCard(
-                        state = viewModel.state,
-                        backgroundColor = AppTheme.colors.cardBackground
-                    )
-                }
-                item { Spacer(modifier = Modifier.height(16.dp)) }
-                item {
-                    WeatherForecast(state = viewModel.state)
-                }
-                item {
-                    SearchWidget(
-                        modifier = Modifier.padding(
-                            top = 16.dp,
-                            start = 16.dp,
-                            end = 16.dp,
-                            bottom = 70.dp
-                        )
-                    ) {
-                        isVisibleSearchField = !isVisibleSearchField
-                    }
-                }
-            }
+            )
         }
         if (viewModel.state.isLoading) {
             CircularProgressIndicator(
@@ -93,6 +78,49 @@ fun WeatherDetailPage(viewModel: WeatherViewModel) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Center)
             )
+        }
+    }
+}
+
+@Composable
+fun WeatherDetailPageLazyColumn(viewModel: WeatherViewModel) {
+    var isVisibleSearchField by rememberSaveable { mutableStateOf(false) }
+    val stateLazyColumn = rememberLazyListState()
+    LazyColumn(
+        state = stateLazyColumn,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppTheme.colors.primaryBackground)
+    ) {
+        if (isVisibleSearchField) {
+            item {
+                rememberCoroutineScope().launch {
+                    stateLazyColumn.animateScrollToItem(index = 0)
+                }
+                SearchField(viewModel = viewModel)
+            }
+        }
+        item {
+            WeatherCard(
+                state = viewModel.state,
+                backgroundColor = AppTheme.colors.cardBackground
+            )
+        }
+        item { Spacer(modifier = Modifier.height(16.dp)) }
+        item {
+            WeatherForecast(state = viewModel.state)
+        }
+        item {
+            SearchWidget(
+                modifier = Modifier.padding(
+                    top = 16.dp,
+                    start = 16.dp,
+                    end = 16.dp,
+                    bottom = 70.dp
+                )
+            ) {
+                isVisibleSearchField = !isVisibleSearchField
+            }
         }
     }
 }

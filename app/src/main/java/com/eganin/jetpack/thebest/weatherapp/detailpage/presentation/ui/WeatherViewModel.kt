@@ -1,5 +1,6 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -154,6 +155,8 @@ class WeatherViewModel @Inject constructor(
             )
             // load data for stock widget
             loadDataStock()
+            // load SunsetAndSunrise for dynamic weather section
+            loadSunsetAndSunriseTimes()
             // get geocoding from city
             geocodingRepository.getGeoFromCity(cityName = cityName).data?.let { location ->
                 // get weather info
