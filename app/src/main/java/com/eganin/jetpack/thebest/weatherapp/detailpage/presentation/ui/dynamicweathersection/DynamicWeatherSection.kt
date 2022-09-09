@@ -2,28 +2,26 @@ package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.dynamic
 
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.eganin.jetpack.thebest.weatherapp.R
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.sunsetsunrisetime.SunsetSunriseTimeData
-import com.eganin.jetpack.thebest.weatherapp.ui.theme.SystemBarColorDay
-import com.eganin.jetpack.thebest.weatherapp.ui.theme.SystemBarColorNight
-import com.eganin.jetpack.thebest.weatherapp.ui.theme.SystemBarColorSunrise
-import com.eganin.jetpack.thebest.weatherapp.ui.theme.SystemBarColorSunset
+import com.eganin.jetpack.thebest.weatherapp.ui.theme.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
@@ -125,6 +123,49 @@ fun DynamicWeatherLandscape(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                     bottom.linkTo(parent.bottom)
+                }
+        )
+
+        val textColor = White.copy(alpha = 0.8f)
+
+        Text(
+            text = "${info.temperatureCelsius}",
+            style = Typography.h3,
+            color = textColor,
+            modifier = Modifier
+                .statusBarsPadding()
+                .constrainAs(temperature){
+                    top.linkTo(parent.top, margin = 5.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                }
+        )
+
+        Text(
+            text = "°C",
+            style = Typography.h5,
+            color = textColor,
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(top = 12.dp)
+                .constrainAs(temperatureUnit) {
+                    top.linkTo(parent.top, margin = 5.dp)
+                    start.linkTo(temperature.end, margin = 4.dp)
+                }
+        )
+
+        val textShadow = Shadow(
+            offset = Offset(5f, 5f),
+            blurRadius = 5f
+        )
+
+        Text(
+            text = info.weatherType.weatherDesc,
+            style = Typography.h5.copy(shadow = textShadow),
+            color = textColor,
+            modifier = Modifier
+                .constrainAs(weatherDescription) {
+                    top.linkTo(temperature.bottom, margin = 8.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
                 }
         )
     }

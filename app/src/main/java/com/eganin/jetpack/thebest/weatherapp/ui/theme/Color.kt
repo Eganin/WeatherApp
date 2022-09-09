@@ -6,6 +6,7 @@ val SystemBarColorSunset = Color(0xFF5C4A60)
 val SystemBarColorDay = Color(0xFF254B94)
 val SystemBarColorSunrise = Color(0xFF404A65)
 val SystemBarColorNight = Color(0xFF010010)
+val White = Color(0xFFFFFFFF)
 
 val baseMorningPalette = AppColors(
     primaryBackground = Color(0xFFFFFFFF),
