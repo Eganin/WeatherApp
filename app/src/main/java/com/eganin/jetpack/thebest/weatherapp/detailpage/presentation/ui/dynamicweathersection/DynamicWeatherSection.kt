@@ -1,6 +1,5 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.dynamicweathersection
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -8,9 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -61,16 +58,23 @@ fun DynamicWeatherLandscape(
         var moonProgressY = 0f
         var moonIsVisible = false
 
+        val startXPositionIcon = width.toFloat() / 1.2f
+        val startYPositionIcon = height.toFloat() / 4f
+        val endXPositionIcon = width.toFloat() /8f
+        val endYPositionIcon = height.toFloat() / 2.5f
+        val maxXPositionIcon = width.toFloat() / 2f
+        val maxYPositionIcon = height.toFloat()/8f
+
         val (backgroundLayer1, backgroundLayer2, mountain, particles, clouds, fog, temperature, temperatureUnit, weatherDescription) = createRefs()
         val (backgroundLayerOneImage, backgroundLayerTwoImage) = when {
             info.time.hour in 6..12
                     && (sunsetAndSunriseTimeData.sunsetHour - info.time.hour) in -1..2 -> {
                 moonIsVisible = true
-                moonProgressX = 200f
-                moonProgressY = height.toFloat() / 2f
+                moonProgressX = endXPositionIcon
+                moonProgressY = endYPositionIcon
 
-                sunProgressX = width.toFloat() - 200f
-                sunProgressY = height.toFloat() / 3f
+                sunProgressX = startXPositionIcon
+                sunProgressY = startYPositionIcon
 
                 PaintStatusBarColor(color = SystemBarColorSunset)
                 R.drawable.day to R.drawable.sunset
@@ -79,18 +83,19 @@ fun DynamicWeatherLandscape(
             (info.time.hour in 6..12
                     && (sunsetAndSunriseTimeData.sunsetHour - info.time.hour) !in -1..2)
                     || (info.time.hour in 13..17) -> {
-                sunProgressY = height.toFloat()/8f
-                sunProgressX = width.toFloat() / 2
+                sunProgressY = maxYPositionIcon
+                sunProgressX = maxXPositionIcon
                 PaintStatusBarColor(color = SystemBarColorDay)
                 R.drawable.day to null
             }
 
             info.time.hour in 18..23
                     && (sunsetAndSunriseTimeData.sunriseHour - info.time.hour) in -1..2 -> {
-                sunProgressX = 200f
-                sunProgressY = height.toFloat() / 3f
+                sunProgressX = endXPositionIcon
+                sunProgressY = endYPositionIcon
                 moonIsVisible = true
-                moonProgressX = width.toFloat() - 200f
+                moonProgressX = startXPositionIcon
+                moonProgressY = startYPositionIcon
                 PaintStatusBarColor(color = SystemBarColorSunrise)
                 R.drawable.night to R.drawable.sunrise
             }
@@ -100,8 +105,8 @@ fun DynamicWeatherLandscape(
                     || (info.time.hour in 0..5) -> {
                 sunIsVisible = false
                 moonIsVisible = true
-                moonProgressX = width.toFloat() / 2
-                moonProgressY = height.toFloat()/8f
+                moonProgressX = maxXPositionIcon
+                moonProgressY = maxYPositionIcon
                 PaintStatusBarColor(color = SystemBarColorNight)
                 R.drawable.night to null
             }
