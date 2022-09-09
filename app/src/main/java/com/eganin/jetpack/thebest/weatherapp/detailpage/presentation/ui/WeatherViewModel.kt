@@ -182,13 +182,49 @@ class WeatherViewModel @Inject constructor(
 
     }
 
-    fun loadSunsetAndSunriseTimes() {
+    private fun loadSunsetAndSunriseTimes() {
         viewModelScope.launch {
-            locationTracker.getCurrentLocation()?.let {
-                sunsetSunriseTimeRepository.getSunsetSunriseTime(
-                    lat = it.latitude,
-                    lon = it.longitude
-                )
+            state = state.copy(
+                isLoading = true,
+                error = null,
+            )
+
+            val providerLocation = if (state.searchQuery.isNotEmpty()) {
+                val answer = geocodingRepository.getGeoFromCity(cityName = state.searchQuery).data
+                answer?.let {
+                    Pair(first = answer.latitude, second = answer.longitude)
+                }
+            } else {
+                val answer = locationTracker.getCurrentLocation()
+                answer?.let {
+                    Pair(first = answer.latitude, second = answer.longitude)
+                }
+            }
+
+            providerLocation?.let { location ->
+                when (val result =
+                    sunsetSunriseTimeRepository.getSunsetSunriseTime(
+                        lat = location.first,
+                        lon = location.second
+                    )) {
+
+                    is Resource.Success -> {
+                        state = state.copy(
+                            sunsetAndSunriseTime = result.data,
+                            isLoading = false,
+                            error = null
+                        )
+                    }
+                    is Resource.Error -> {
+                        state = state.copy(
+                            sunsetAndSunriseTime = null,
+                            isLoading = false,
+                            error = result.message
+                        )
+                    }
+                }
+            } ?: run {
+                onEvent(event = DetailPageEvent.Error)
             }
         }
     }
