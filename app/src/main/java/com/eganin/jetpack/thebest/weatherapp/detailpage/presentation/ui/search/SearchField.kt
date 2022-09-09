@@ -11,6 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.eganin.jetpack.thebest.weatherapp.R
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.DetailPageEvent
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherViewModel
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppColors
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
@@ -33,14 +34,14 @@ fun SearchField(viewModel: WeatherViewModel) {
 
     LaunchedEffect(key1 = Unit) {
         if (state.searchQuery.isNotEmpty()) {
-            viewModel.loadGeocoding(cityName = state.searchQuery)
+            viewModel.onEvent(event = DetailPageEvent.OnSearchQueryChange(query = state.searchQuery))
         }
     }
 
     OutlinedTextField(
         value = state.searchQuery,
-        onValueChange = {
-            viewModel.loadGeocoding(cityName = it)
+        onValueChange = { query ->
+            viewModel.onEvent(event = DetailPageEvent.OnSearchQueryChange(query = query))
         },
         modifier = Modifier
             .padding(16.dp)

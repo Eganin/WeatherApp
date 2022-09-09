@@ -17,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.getThemeType
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.DetailPageEvent
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherDetailPage
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherViewModel
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppCorners
@@ -45,8 +46,7 @@ class MainActivity : ComponentActivity() {
         permissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) {
-            weatherViewModel.loadWeatherInfo()
-            weatherViewModel.loadDataStock()
+            weatherViewModel.onEvent(event = DetailPageEvent.FirstLoadDataFromCurrentGeolocation)
         }
         permissionLauncher.launch(
             arrayOf(

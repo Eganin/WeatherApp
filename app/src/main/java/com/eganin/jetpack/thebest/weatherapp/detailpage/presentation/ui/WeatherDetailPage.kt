@@ -18,6 +18,8 @@ import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.listdeta
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.search.SearchField
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.search.SearchWidget
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -25,42 +27,50 @@ fun WeatherDetailPage(viewModel: WeatherViewModel) {
 
     var isVisibleSearchField by rememberSaveable { mutableStateOf(false) }
     val stateLazyColumn = rememberLazyListState()
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = viewModel.state.isRefreshing)
 
     Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(
-            state = stateLazyColumn,
-            modifier = Modifier
-                .fillMaxSize()
-                .background(AppTheme.colors.primaryBackground)
-        ) {
-            if (isVisibleSearchField) {
-                item {
-                    rememberCoroutineScope().launch {
-                        stateLazyColumn.animateScrollToItem(index = 0)
+        SwipeRefresh(
+            state = swipeRefreshState,
+            onRefresh = {
+                viewModel.onEvent(DetailPageEvent.Refresh)
+            }
+        ){
+            LazyColumn(
+                state = stateLazyColumn,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(AppTheme.colors.primaryBackground)
+            ) {
+                if (isVisibleSearchField) {
+                    item {
+                        rememberCoroutineScope().launch {
+                            stateLazyColumn.animateScrollToItem(index = 0)
+                        }
+                        SearchField(viewModel = viewModel)
                     }
-                    SearchField(viewModel = viewModel)
                 }
-            }
-            item {
-                WeatherCard(
-                    state = viewModel.state,
-                    backgroundColor = AppTheme.colors.cardBackground
-                )
-            }
-            item { Spacer(modifier = Modifier.height(16.dp)) }
-            item {
-                WeatherForecast(state = viewModel.state)
-            }
-            item {
-                SearchWidget(
-                    modifier = Modifier.padding(
-                        top = 16.dp,
-                        start = 16.dp,
-                        end = 16.dp,
-                        bottom = 70.dp
+                item {
+                    WeatherCard(
+                        state = viewModel.state,
+                        backgroundColor = AppTheme.colors.cardBackground
                     )
-                ) {
-                    isVisibleSearchField = !isVisibleSearchField
+                }
+                item { Spacer(modifier = Modifier.height(16.dp)) }
+                item {
+                    WeatherForecast(state = viewModel.state)
+                }
+                item {
+                    SearchWidget(
+                        modifier = Modifier.padding(
+                            top = 16.dp,
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 70.dp
+                        )
+                    ) {
+                        isVisibleSearchField = !isVisibleSearchField
+                    }
                 }
             }
         }

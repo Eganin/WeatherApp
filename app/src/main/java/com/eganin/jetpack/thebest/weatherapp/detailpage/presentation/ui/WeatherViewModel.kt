@@ -30,7 +30,49 @@ class WeatherViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
-    fun loadWeatherInfo() {
+    fun onEvent(event: DetailPageEvent) {
+        when (event) {
+            is DetailPageEvent.Refresh -> {
+                if (state.searchQuery.isEmpty()) {
+                    loadWeatherInfo()
+                    loadDataStock()
+                } else {
+                    onEvent(event = DetailPageEvent.OnSearchQueryChange(query = state.searchQuery))
+                }
+
+            }
+
+            is DetailPageEvent.OnSearchQueryChange -> {
+                state = state.copy(searchQuery = event.query)
+                searchJob?.cancel()
+                searchJob = viewModelScope.launch {
+                    delay(1000L)
+                    loadGeocoding(cityName = state.searchQuery)
+                }
+            }
+
+            is DetailPageEvent.FirstLoadDataFromCurrentGeolocation -> {
+                loadWeatherInfo()
+                loadDataStock()
+            }
+
+            is DetailPageEvent.Error -> {
+                state = state.copy(
+                    isLoading = false,
+                    error = "Couldn't retrieve location.Make sure enable GPS"
+                )
+            }
+
+            is DetailPageEvent.ErrorGeocodingFromCity -> {
+                state = state.copy(
+                    isLoading = false,
+                    error = "Couldn't retrieve location. Wrong city"
+                )
+            }
+        }
+    }
+
+    private fun loadWeatherInfo() {
         viewModelScope.launch {
             state = state.copy(
                 isLoading = true,
@@ -56,16 +98,12 @@ class WeatherViewModel @Inject constructor(
                     }
                 }
             } ?: run {
-                Log.d("EEE", "FAILED")
-                state = state.copy(
-                    isLoading = false,
-                    error = "Couldn't retrieve location.Make sure enable GPS"
-                )
+                onEvent(event = DetailPageEvent.Error)
             }
         }
     }
 
-    fun loadDataStock() {
+    private fun loadDataStock() {
         viewModelScope.launch {
             state = state.copy(
                 isLoading = true,
@@ -103,20 +141,13 @@ class WeatherViewModel @Inject constructor(
                     }
                 }
             } ?: run {
-                Log.d("EEE", "FAILED")
-                state = state.copy(
-                    isLoading = false,
-                    error = "Couldn't retrieve location.Make sure enable GPS"
-                )
+                onEvent(event = DetailPageEvent.Error)
             }
         }
     }
 
-    fun loadGeocoding(cityName: String) {
-        state = state.copy(searchQuery = cityName)
-        searchJob?.cancel()
+    private fun loadGeocoding(cityName: String) {
         searchJob = viewModelScope.launch {
-            delay(1000L)
             state = state.copy(
                 isLoading = true,
                 error = null,
@@ -145,11 +176,7 @@ class WeatherViewModel @Inject constructor(
                     }
                 }
             } ?: run {
-                Log.d("EEE", "FAILED")
-                state = state.copy(
-                    isLoading = false,
-                    error = "Couldn't retrieve location. Wrong city"
-                )
+                onEvent(event = DetailPageEvent.ErrorGeocodingFromCity)
             }
         }
 
