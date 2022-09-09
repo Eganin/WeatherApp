@@ -15,4 +15,6 @@
     <string name="saturday_label">Saturday</string>
     <string name="sunday_label">Sunday</string>
     <string name="mountain_description">Mountain</string>
+    <string name="sun_image_description">Sun</string>
+    <string name="moon_image_description">Moon</string>
 </resources>

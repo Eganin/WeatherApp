@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Constraints
@@ -48,10 +49,29 @@ fun DynamicWeatherLandscape(
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
     ) {
+
+        val height = constraints.maxHeight
+        val width = constraints.maxWidth
+
+        var sunProgressX = 0f
+        var sunProgressY = 0f
+        var sunIsVisible = true
+
+        var moonProgressX = 0f
+        var moonProgressY = 0f
+        var moonIsVisible = false
+
         val (backgroundLayer1, backgroundLayer2, mountain, particles, clouds, fog, temperature, temperatureUnit, weatherDescription) = createRefs()
         val (backgroundLayerOneImage, backgroundLayerTwoImage) = when {
             info.time.hour in 6..12
                     && (sunsetAndSunriseTimeData.sunsetHour - info.time.hour) in -1..2 -> {
+                moonIsVisible = true
+                moonProgressX = 200f
+                moonProgressY = height.toFloat() / 2f
+
+                sunProgressX = width.toFloat() - 200f
+                sunProgressY = height.toFloat() / 3f
+
                 PaintStatusBarColor(color = SystemBarColorSunset)
                 R.drawable.day to R.drawable.sunset
             }
@@ -59,12 +79,18 @@ fun DynamicWeatherLandscape(
             (info.time.hour in 6..12
                     && (sunsetAndSunriseTimeData.sunsetHour - info.time.hour) !in -1..2)
                     || (info.time.hour in 13..17) -> {
+                sunProgressY = height.toFloat()/8f
+                sunProgressX = width.toFloat() / 2
                 PaintStatusBarColor(color = SystemBarColorDay)
                 R.drawable.day to null
             }
 
             info.time.hour in 18..23
                     && (sunsetAndSunriseTimeData.sunriseHour - info.time.hour) in -1..2 -> {
+                sunProgressX = 200f
+                sunProgressY = height.toFloat() / 3f
+                moonIsVisible = true
+                moonProgressX = width.toFloat() - 200f
                 PaintStatusBarColor(color = SystemBarColorSunrise)
                 R.drawable.night to R.drawable.sunrise
             }
@@ -72,6 +98,10 @@ fun DynamicWeatherLandscape(
             (info.time.hour in 18..23
                     && (sunsetAndSunriseTimeData.sunriseHour - info.time.hour) !in -1..2)
                     || (info.time.hour in 0..5) -> {
+                sunIsVisible = false
+                moonIsVisible = true
+                moonProgressX = width.toFloat() / 2
+                moonProgressY = height.toFloat()/8f
                 PaintStatusBarColor(color = SystemBarColorNight)
                 R.drawable.night to null
             }
@@ -134,7 +164,7 @@ fun DynamicWeatherLandscape(
             color = textColor,
             modifier = Modifier
                 .statusBarsPadding()
-                .constrainAs(temperature){
+                .constrainAs(temperature) {
                     top.linkTo(parent.top, margin = 5.dp)
                     start.linkTo(parent.start, margin = 16.dp)
                 }
@@ -168,6 +198,34 @@ fun DynamicWeatherLandscape(
                     start.linkTo(parent.start, margin = 16.dp)
                 }
         )
+
+        if (sunIsVisible) {
+            Image(
+                painter = painterResource(id = R.drawable.sun),
+                contentDescription = stringResource(R.string.sun_image_description),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(64.dp)
+                    .offset(
+                        x = with(LocalDensity.current) { sunProgressX.toDp() },
+                        y = with(LocalDensity.current) { sunProgressY.toDp() }
+                    )
+            )
+        }
+
+        if (moonIsVisible) {
+            Image(
+                painter = painterResource(id = R.drawable.moon),
+                contentDescription = stringResource(R.string.moon_image_description),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(64.dp)
+                    .offset(
+                        x = with(LocalDensity.current) { moonProgressX.toDp() },
+                        y = with(LocalDensity.current) { moonProgressY.toDp() }
+                    )
+            )
+        }
     }
 }
 

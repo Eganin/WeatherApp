@@ -2,6 +2,5 @@
 <resources>
 
     <style name="Theme.WeatherApp" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">#1B3B5A</item>
     </style>
 </resources>
