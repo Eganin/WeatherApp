@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.carddetail.WeatherCard
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.dynamicweathersection.DynamicWeatherSection
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.listdetail.WeatherForecast
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.search.SearchField
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.search.SearchWidget
@@ -48,6 +49,11 @@ fun WeatherDetailPage(viewModel: WeatherViewModel) {
                             stateLazyColumn.animateScrollToItem(index = 0)
                         }
                         SearchField(viewModel = viewModel)
+                    }
+                }
+                item {
+                    viewModel.state.weatherInfo?.currentWeatherData?.let {
+                        DynamicWeatherSection(info = it)
                     }
                 }
                 item {

@@ -79,6 +79,8 @@ class WeatherViewModel @Inject constructor(
                 error = null,
             )
             locationTracker.getCurrentLocation()?.let { location ->
+                Log.d("EEE",location.latitude.toString())
+                Log.d("EEE",location.longitude.toString())
                 when (val result =
                     repository.getWeatherData(location.latitude, location.longitude)) {
 
