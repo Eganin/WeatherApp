@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -30,6 +31,12 @@ fun SearchField(viewModel: WeatherViewModel) {
         }
     }
 
+    LaunchedEffect(key1 = Unit) {
+        if (state.searchQuery.isNotEmpty()) {
+            viewModel.loadGeocoding(cityName = state.searchQuery)
+        }
+    }
+
     OutlinedTextField(
         value = state.searchQuery,
         onValueChange = {
@@ -45,9 +52,9 @@ fun SearchField(viewModel: WeatherViewModel) {
         trailingIcon = trailingIconView,
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = AppTheme.colors.cardBackground,
-            cursorColor =  AppTheme.colors.tintColor,
-            focusedLabelColor =  AppTheme.colors.tintColor,
-            focusedIndicatorColor =  AppTheme.colors.tintColor,
+            cursorColor = AppTheme.colors.tintColor,
+            focusedLabelColor = AppTheme.colors.tintColor,
+            focusedIndicatorColor = AppTheme.colors.tintColor,
         ),
         maxLines = 1,
         singleLine = true,

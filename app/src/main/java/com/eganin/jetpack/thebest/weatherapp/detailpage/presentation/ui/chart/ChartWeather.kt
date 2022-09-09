@@ -23,16 +23,22 @@ import androidx.compose.ui.unit.sp
 import com.eganin.jetpack.thebest.weatherapp.R
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.Typography
+import kotlin.math.abs
+import kotlin.math.max
 
 @Composable
 fun ChartWeather(info: List<Int>, modifier: Modifier = Modifier) {
+    // variable height depending on the maximum value
+    val heightCard = if(abs(max(info.max(),info.min())) > 15) 250.dp else 180.dp
+    Log.d("EEE",heightCard.toString())
+    Log.d("EEE",abs(max(info.max(),info.min())).toString())
     Card(
         backgroundColor = AppTheme.colors.secondaryBackground,
         shape = RoundedCornerShape(10.dp),
         modifier = modifier
             .padding(top = 16.dp)
             .fillMaxWidth()
-            .height(180.dp)
+            .height(heightCard)
     ) {
         Column {
             Text(

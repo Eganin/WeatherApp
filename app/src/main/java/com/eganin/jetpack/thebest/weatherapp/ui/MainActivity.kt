@@ -17,7 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.getThemeType
-import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.carddetail.WeatherDetailPage
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherDetailPage
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherViewModel
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppCorners
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme

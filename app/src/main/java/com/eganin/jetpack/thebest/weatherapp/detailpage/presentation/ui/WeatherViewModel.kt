@@ -71,9 +71,22 @@ class WeatherViewModel @Inject constructor(
                 isLoading = true,
                 error = null,
             )
-            locationTracker.getCurrentLocation()?.let { location ->
+
+            val providerLocation = if (state.searchQuery.isNotEmpty()) {
+                val answer = geocodingRepository.getGeoFromCity(cityName = state.searchQuery).data
+                answer?.let {
+                    Pair(first = answer.latitude, second = answer.longitude)
+                }
+            } else {
+                val answer = locationTracker.getCurrentLocation()
+                answer?.let {
+                    Pair(first = answer.latitude, second = answer.longitude)
+                }
+            }
+
+            providerLocation?.let { location ->
                 when (val result =
-                    repository.getDataForStock(location.latitude, location.longitude)) {
+                    repository.getDataForStock(location.first, location.second)) {
                     is Resource.Success -> {
                         state = state.copy(
                             dataStock = result.data,
@@ -100,14 +113,16 @@ class WeatherViewModel @Inject constructor(
     }
 
     fun loadGeocoding(cityName: String) {
-        state= state.copy(searchQuery = cityName)
+        state = state.copy(searchQuery = cityName)
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            delay(1500L)
+            delay(1000L)
             state = state.copy(
                 isLoading = true,
                 error = null,
             )
+            // load data for stock widget
+            loadDataStock()
             // get geocoding from city
             geocodingRepository.getGeoFromCity(cityName = cityName).data?.let { location ->
                 // get weather info
