@@ -1,6 +1,5 @@
 package com.eganin.jetpack.thebest.weatherapp.weeklist
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.eganin.jetpack.thebest.weatherapp.common.domain.location.LocationTracker
 import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.WeatherRepository
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
+import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.GeocodingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,22 +16,51 @@ import javax.inject.Inject
 @HiltViewModel
 class WeekListViewModel @Inject constructor(
     private val repository: WeatherRepository,
-    private val locationTracker: LocationTracker
+    private val locationTracker: LocationTracker,
+    private val geocodingRepository: GeocodingRepository
 ) : ViewModel() {
     var state by mutableStateOf(WeekListState())
         private set
 
-    fun loadWeatherDataForEveryDay() {
+    fun onEvent(event: WeekListEvent) {
+        when (event) {
+            is WeekListEvent.LoadData -> {
+                loadWeatherDataForEveryDay(searchQuery = event.searchQuery)
+            }
+
+            is WeekListEvent.Error -> {
+                state = state.copy(
+                    isLoading = false,
+                    error = "Couldn't retrieve location.Make sure enable GPS"
+                )
+            }
+        }
+    }
+
+    private fun loadWeatherDataForEveryDay(searchQuery: String = "") {
         viewModelScope.launch {
             state = state.copy(
                 isLoading = true,
                 error = null,
             )
-            locationTracker.getCurrentLocation()?.let { location ->
+
+            val providerLocation = if (searchQuery.isNotEmpty()) {
+                val answer = geocodingRepository.getGeoFromCity(cityName = searchQuery).data
+                answer?.let {
+                    Pair(first = answer.latitude, second = answer.longitude)
+                }
+            } else {
+                val answer = locationTracker.getCurrentLocation()
+                answer?.let {
+                    Pair(first = answer.latitude, second = answer.longitude)
+                }
+            }
+
+            providerLocation?.let { location ->
                 when (val result =
                     repository.getDataForEveryDay(
-                        lat = location.latitude,
-                        long = location.longitude
+                        lat = location.first,
+                        long = location.second
                     )) {
                     is Resource.Success -> {
                         state = state.copy(
@@ -49,11 +78,7 @@ class WeekListViewModel @Inject constructor(
                     }
                 }
             } ?: run {
-                Log.d("EEE", "FAILED")
-                state = state.copy(
-                    isLoading = false,
-                    error = "Couldn't retrieve location.Make sure enable GPS"
-                )
+                onEvent(event = WeekListEvent.Error)
             }
         }
     }

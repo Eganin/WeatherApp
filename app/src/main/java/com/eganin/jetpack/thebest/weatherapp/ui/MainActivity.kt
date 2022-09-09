@@ -90,7 +90,8 @@ class MainActivity : ComponentActivity() {
                             when (page) {
                                 0 -> WeekListPage(
                                     weekListViewModel = weekListViewModel,
-                                    weatherViewModel = weatherViewModel
+                                    weatherViewModel = weatherViewModel,
+                                    weatherState = weatherViewModel.state
                                 )
                                 1 -> WeatherDetailPage(
                                     viewModel = weatherViewModel

@@ -30,8 +30,6 @@ import kotlin.math.max
 fun ChartWeather(info: List<Int>, modifier: Modifier = Modifier) {
     // variable height depending on the maximum value
     val heightCard = if(abs(max(info.max(),info.min())) > 15) 250.dp else 180.dp
-    Log.d("EEE",heightCard.toString())
-    Log.d("EEE",abs(max(info.max(),info.min())).toString())
     Card(
         backgroundColor = AppTheme.colors.secondaryBackground,
         shape = RoundedCornerShape(10.dp),
