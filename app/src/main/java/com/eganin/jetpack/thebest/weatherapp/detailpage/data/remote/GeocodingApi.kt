@@ -13,6 +13,5 @@ interface GeocodingApi {
 
     companion object {
         private const val API_KEY = "ac0408e4e39747d67068b81850960e69"
-        private const val CITY_PATH_NAME = "city"
     }
 }

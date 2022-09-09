@@ -3,6 +3,7 @@ package com.eganin.jetpack.thebest.weatherapp.di
 import android.app.Application
 import com.eganin.jetpack.thebest.weatherapp.common.data.remote.WeatherApi
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.GeocodingApi
+import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.SunsetSunriseTimeApi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -26,13 +27,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideWeatherApi(): WeatherApi {
-        val client = OkHttpClient.Builder()
-            .addInterceptor(
-                HttpLoggingInterceptor()
-                    .setLevel(level = HttpLoggingInterceptor.Level.BODY)
-            )
-            .build()
+    fun provideWeatherApi(client: OkHttpClient): WeatherApi {
         return Retrofit.Builder()
             .baseUrl("https://api.open-meteo.com/")
             .addConverterFactory(MoshiConverterFactory.create())
@@ -41,21 +36,41 @@ object AppModule {
             .create()
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
     @Provides
     @Singleton
-    fun provideGeocodingApi(): GeocodingApi {
-        val json = Json {
-            ignoreUnknownKeys = true
-        }
-        val client = OkHttpClient.Builder()
+    fun provideHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
             .addInterceptor(
                 HttpLoggingInterceptor()
                     .setLevel(level = HttpLoggingInterceptor.Level.BODY)
             )
             .build()
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    @Provides
+    @Singleton
+    fun provideGeocodingApi(client: OkHttpClient): GeocodingApi {
+        val json = Json {
+            ignoreUnknownKeys = true
+        }
         return Retrofit.Builder()
             .baseUrl("https://api.openweathermap.org/")
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .client(client)
+            .build()
+            .create()
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    @Provides
+    @Singleton
+    fun provideSunsetSunriseTimeApi(client: OkHttpClient): SunsetSunriseTimeApi {
+        val json = Json {
+            ignoreUnknownKeys = true
+        }
+        return Retrofit.Builder()
+            .baseUrl("https://api.sunrise-sunset.org/")
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .client(client)
             .build()

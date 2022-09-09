@@ -1,6 +1,5 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,9 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.eganin.jetpack.thebest.weatherapp.common.domain.location.LocationTracker
 import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.WeatherRepository
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
-import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherInfo
-import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.GeocodingDto
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.GeocodingRepository
+import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.SunsetSunriseTimeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -22,7 +20,8 @@ import javax.inject.Inject
 class WeatherViewModel @Inject constructor(
     private val repository: WeatherRepository,
     private val locationTracker: LocationTracker,
-    private val geocodingRepository: GeocodingRepository
+    private val geocodingRepository: GeocodingRepository,
+    private val sunsetSunriseTimeRepository: SunsetSunriseTimeRepository
 ) : ViewModel() {
 
     var state by mutableStateOf(WeatherState())
@@ -54,6 +53,7 @@ class WeatherViewModel @Inject constructor(
             is DetailPageEvent.FirstLoadDataFromCurrentGeolocation -> {
                 loadWeatherInfo()
                 loadDataStock()
+                loadSunsetAndSunriseTimes()
             }
 
             is DetailPageEvent.Error -> {
@@ -79,8 +79,6 @@ class WeatherViewModel @Inject constructor(
                 error = null,
             )
             locationTracker.getCurrentLocation()?.let { location ->
-                Log.d("EEE",location.latitude.toString())
-                Log.d("EEE",location.longitude.toString())
                 when (val result =
                     repository.getWeatherData(location.latitude, location.longitude)) {
 
@@ -182,5 +180,16 @@ class WeatherViewModel @Inject constructor(
             }
         }
 
+    }
+
+    fun loadSunsetAndSunriseTimes() {
+        viewModelScope.launch {
+            locationTracker.getCurrentLocation()?.let {
+                sunsetSunriseTimeRepository.getSunsetSunriseTime(
+                    lat = it.latitude,
+                    lon = it.longitude
+                )
+            }
+        }
     }
 }
