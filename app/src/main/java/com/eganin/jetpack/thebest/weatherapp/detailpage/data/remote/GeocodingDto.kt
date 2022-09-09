@@ -1,6 +1,5 @@
-package com.eganin.jetpack.thebest.weatherapp.search.data.remote
+package com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote
 
-import com.squareup.moshi.Json
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

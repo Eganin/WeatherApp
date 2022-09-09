@@ -40,16 +40,25 @@ fun WeatherCard(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "${stringResource(R.string.today_caption)} ${
-                        data.time.format(
-                            DateTimeFormatter.ofPattern("HH:mm")
-                        )
-                    }",
-                    modifier = Modifier.align(Alignment.End),
-                    style = Typography.caption,
-                    color = AppTheme.colors.primaryText
-                )
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = state.searchQuery,
+                        style = Typography.caption,
+                        color = AppTheme.colors.primaryText
+                    )
+                    Text(
+                        text = "${stringResource(R.string.today_caption)} ${
+                            data.time.format(
+                                DateTimeFormatter.ofPattern("HH:mm")
+                            )
+                        }",
+                        style = Typography.caption,
+                        color = AppTheme.colors.primaryText
+                    )
+                }
                 Spacer(modifier = Modifier.height(16.dp))
                 Image(
                     painter = painterResource(id = data.weatherType.iconRes),

@@ -2,7 +2,7 @@ package com.eganin.jetpack.thebest.weatherapp.di
 
 import android.app.Application
 import com.eganin.jetpack.thebest.weatherapp.common.data.remote.WeatherApi
-import com.eganin.jetpack.thebest.weatherapp.search.data.remote.GeocodingApi
+import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.GeocodingApi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -28,7 +28,10 @@ object AppModule {
     @Singleton
     fun provideWeatherApi(): WeatherApi {
         val client = OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor())
+            .addInterceptor(
+                HttpLoggingInterceptor()
+                    .setLevel(level = HttpLoggingInterceptor.Level.BODY)
+            )
             .build()
         return Retrofit.Builder()
             .baseUrl("https://api.open-meteo.com/")
@@ -44,10 +47,12 @@ object AppModule {
     fun provideGeocodingApi(): GeocodingApi {
         val json = Json {
             ignoreUnknownKeys = true
-            //coerceInputValues = true
         }
         val client = OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor())
+            .addInterceptor(
+                HttpLoggingInterceptor()
+                    .setLevel(level = HttpLoggingInterceptor.Level.BODY)
+            )
             .build()
         return Retrofit.Builder()
             .baseUrl("https://api.openweathermap.org/")

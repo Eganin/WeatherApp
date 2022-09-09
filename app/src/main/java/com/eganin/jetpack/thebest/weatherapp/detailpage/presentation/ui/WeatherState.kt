@@ -6,5 +6,6 @@ data class WeatherState(
     val weatherInfo: WeatherInfo? = null,
     val dataStock : List<Int>? = null,
     val isLoading: Boolean = false,
+    val searchQuery : String ="",
     val error: String? = null
 )

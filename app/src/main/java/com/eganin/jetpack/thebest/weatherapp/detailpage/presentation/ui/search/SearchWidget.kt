@@ -1,4 +1,4 @@
-package com.eganin.jetpack.thebest.weatherapp.search
+package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

@@ -18,7 +18,7 @@ fun BottomBar(navController: NavController) {
         listOf(
             DestinationsPage.WeekList.name,
             DestinationsPage.Home.name,
-            DestinationsPage.Search.name,
+            DestinationsPage.CityManagement.name,
         )
 
     BottomNavigation(backgroundColor = AppTheme.colors.secondaryBackground) {
@@ -39,8 +39,8 @@ fun BottomBar(navController: NavController) {
 @Composable
 private fun getIconForBottomBar(screen: String, isSelected: Boolean = false) {
     return when (screen) {
-        "Search" -> Icon(
-            painter = painterResource(id = R.drawable.ic_baseline_search_24),
+        "CityManagement" -> Icon(
+            painter = painterResource(id = R.drawable.ic_baseline_location_city_24),
             contentDescription = "Search",
             tint = if (isSelected) AppTheme.colors.tintColor else AppTheme.colors.primaryText
         )
@@ -61,5 +61,5 @@ private fun getIconForBottomBar(screen: String, isSelected: Boolean = false) {
 enum class DestinationsPage {
     WeekList,
     Home,
-    Search
+    CityManagement
 }
