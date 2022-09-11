@@ -1,5 +1,6 @@
 package com.eganin.jetpack.thebest.weatherapp.weeklist.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -44,9 +45,9 @@ fun WeekListPage(
             weekListViewModel.state.info?.let { info ->
                 LazyColumn {
                     items(info.size) { indexDay ->
-                        info.forEach { weatherData ->
+                        info.get(indexDay)?.maxBy { it.temperatureCelsius }?.let {
                             DailyWeatherDisplay(
-                                weatherData = weatherData.value[12],
+                                weatherData = it,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(6.dp),

@@ -17,4 +17,7 @@
     <string name="mountain_description">Mountain</string>
     <string name="sun_image_description">Sun</string>
     <string name="moon_image_description">Moon</string>
+    <string name="weather_radar_label">Weather radar</string>
+    <string name="satellite_subtitle">Satellite image</string>
+    <string name="fake_satellite_image_description">Fake Satellite image</string>
 </resources>

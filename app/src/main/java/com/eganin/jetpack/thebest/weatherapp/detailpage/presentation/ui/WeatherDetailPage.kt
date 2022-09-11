@@ -22,6 +22,7 @@ import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.dynamicw
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.listdetail.WeatherForecast
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.search.SearchField
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.search.SearchWidget
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.weatherradar.WeatherRadar
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -109,6 +110,7 @@ fun WeatherDetailPageLazyColumn(viewModel: WeatherViewModel) {
                 backgroundColor = AppTheme.colors.cardBackground
             )
         }
+        item { WeatherRadar() }
         item { Spacer(modifier = Modifier.height(16.dp)) }
         item {
             WeatherForecast(state = viewModel.state)
