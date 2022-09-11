@@ -22,6 +22,8 @@ import com.eganin.jetpack.thebest.weatherapp.R
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherState
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.sunsetsunrisetime.SunsetSunriseTimeData
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.rainParameters
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.snowParameters
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.Dispatchers
@@ -53,13 +55,13 @@ fun DynamicWeatherLandscape(
         modifier = Modifier.fillMaxSize()
     ) {
 
-        var isVisibleThunder by remember{mutableStateOf(false)}
+        var isVisibleThunder by remember { mutableStateOf(false) }
         // while for thunder
         rememberCoroutineScope().launch {
-            withContext(Dispatchers.IO){
-                while (true){
+            withContext(Dispatchers.IO) {
+                while (true) {
                     delay(5000L)
-                    withContext(Dispatchers.Main){
+                    withContext(Dispatchers.Main) {
                         isVisibleThunder = !isVisibleThunder
                     }
                 }
@@ -261,6 +263,48 @@ fun DynamicWeatherLandscape(
         // add thunder
         if (weatherState == WeatherState.THUNDERSTORM && isVisibleThunder) {
             Thunder(width = constraints.maxWidth, height = constraints.maxHeight)
+        }
+
+        // add clouds
+        Crossfade(targetState = weatherState) { state ->
+            val precipitationsParameters = when (state) {
+                WeatherState.RAIN -> rainParameters
+                WeatherState.HEAVY_RAIN -> rainParameters.copy(particleCount = 2000)
+                WeatherState.THUNDERSTORM -> rainParameters.copy(
+                    particleCount = 2000,
+                    minAngle = 265,
+                    maxAngle = 295
+                )
+                WeatherState.SNOW -> snowParameters
+                else -> null
+            }
+
+            val cloudCount = when (state) {
+                WeatherState.RAIN -> 3
+                WeatherState.HEAVY_RAIN -> 5
+                WeatherState.THUNDERSTORM -> 6
+                WeatherState.SNOW -> 3
+                WeatherState.CLEAR_SKY -> 0
+                WeatherState.FEW_CLOUDS -> 2
+                WeatherState.SCATTERED_CLOUDS -> 3
+                WeatherState.MOSTLY_CLOUDY -> 8
+                WeatherState.FOG -> 3
+            }
+
+            if (cloudCount > 0) {
+                Clouds(
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.5f)
+                        .constrainAs(clouds) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
+                    cloudCount = cloudCount
+                )
+            }
         }
     }
 }
