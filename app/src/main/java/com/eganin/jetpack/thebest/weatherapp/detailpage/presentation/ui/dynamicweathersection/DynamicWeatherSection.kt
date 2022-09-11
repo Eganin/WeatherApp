@@ -1,10 +1,12 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.dynamicweathersection
 
+import android.util.Log
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -18,9 +20,15 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.eganin.jetpack.thebest.weatherapp.R
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData
+import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherState
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.sunsetsunrisetime.SunsetSunriseTimeData
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun DynamicWeatherSection(info: WeatherData, sunsetAndSunriseTimeData: SunsetSunriseTimeData) {
@@ -39,13 +47,24 @@ fun DynamicWeatherSection(info: WeatherData, sunsetAndSunriseTimeData: SunsetSun
 
 @Composable
 fun DynamicWeatherLandscape(
-    info: WeatherData,
-    sunsetAndSunriseTimeData: SunsetSunriseTimeData,
-    constraints: Constraints
+    info: WeatherData, sunsetAndSunriseTimeData: SunsetSunriseTimeData, constraints: Constraints
 ) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
     ) {
+
+        var isVisibleThunder by remember{mutableStateOf(false)}
+        // while for thunder
+        rememberCoroutineScope().launch {
+            withContext(Dispatchers.IO){
+                while (true){
+                    delay(5000L)
+                    withContext(Dispatchers.Main){
+                        isVisibleThunder = !isVisibleThunder
+                    }
+                }
+            }
+        }
 
         val height = constraints.maxHeight
         val width = constraints.maxWidth
@@ -60,15 +79,14 @@ fun DynamicWeatherLandscape(
 
         val startXPositionIcon = width.toFloat() / 1.2f
         val startYPositionIcon = height.toFloat() / 4f
-        val endXPositionIcon = width.toFloat() /8f
+        val endXPositionIcon = width.toFloat() / 8f
         val endYPositionIcon = height.toFloat() / 2.5f
         val maxXPositionIcon = width.toFloat() / 2f
-        val maxYPositionIcon = height.toFloat()/8f
+        val maxYPositionIcon = height.toFloat() / 8f
 
         val (backgroundLayer1, backgroundLayer2, mountain, particles, clouds, fog, temperature, temperatureUnit, weatherDescription) = createRefs()
         val (backgroundLayerOneImage, backgroundLayerTwoImage) = when {
-            info.time.hour in 6..11
-                    && (sunsetAndSunriseTimeData.sunriseHour - info.time.hour) in -1..2 -> {
+            info.time.hour in 6..11 && (sunsetAndSunriseTimeData.sunriseHour - info.time.hour) in -1..2 -> {
                 moonIsVisible = true
                 moonProgressX = endXPositionIcon
                 moonProgressY = endYPositionIcon
@@ -80,17 +98,14 @@ fun DynamicWeatherLandscape(
                 R.drawable.day to R.drawable.sunrise
             }
 
-            (info.time.hour in 6..11
-                    && (sunsetAndSunriseTimeData.sunriseHour - info.time.hour) !in -1..2)
-                    || (info.time.hour in 12..16) -> {
+            (info.time.hour in 6..11 && (sunsetAndSunriseTimeData.sunriseHour - info.time.hour) !in -1..2) || (info.time.hour in 12..16) -> {
                 sunProgressY = maxYPositionIcon
                 sunProgressX = maxXPositionIcon
                 PaintStatusBarColor(color = SystemBarColorDay)
                 R.drawable.day to null
             }
 
-            info.time.hour in 17..21
-                    && (sunsetAndSunriseTimeData.sunsetHour - info.time.hour) in -1..2 -> {
+            info.time.hour in 17..21 && (sunsetAndSunriseTimeData.sunsetHour - info.time.hour) in -1..2 -> {
                 sunProgressX = endXPositionIcon
                 sunProgressY = endYPositionIcon
                 moonIsVisible = true
@@ -100,9 +115,7 @@ fun DynamicWeatherLandscape(
                 R.drawable.night to R.drawable.sunset
             }
 
-            (info.time.hour in 21..23
-                    && (sunsetAndSunriseTimeData.sunsetHour - info.time.hour) !in -1..2)
-                    || (info.time.hour in 0..5) -> {
+            (info.time.hour in 21..23 && (sunsetAndSunriseTimeData.sunsetHour - info.time.hour) !in -1..2) || (info.time.hour in 0..5) -> {
                 sunIsVisible = false
                 moonIsVisible = true
                 moonProgressX = maxXPositionIcon
@@ -146,8 +159,7 @@ fun DynamicWeatherLandscape(
                 )
         }
 
-        Image(
-            painter = painterResource(id = R.drawable.landscape),
+        Image(painter = painterResource(id = R.drawable.landscape),
             contentDescription = stringResource(
                 R.string.mountain_description
             ),
@@ -158,13 +170,11 @@ fun DynamicWeatherLandscape(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                     bottom.linkTo(parent.bottom)
-                }
-        )
+                })
 
         val textColor = White.copy(alpha = 0.8f)
 
-        Text(
-            text = "${info.temperatureCelsius}",
+        Text(text = "${info.temperatureCelsius}",
             style = Typography.h3,
             color = textColor,
             modifier = Modifier
@@ -172,11 +182,9 @@ fun DynamicWeatherLandscape(
                 .constrainAs(temperature) {
                     top.linkTo(parent.top, margin = 5.dp)
                     start.linkTo(parent.start, margin = 16.dp)
-                }
-        )
+                })
 
-        Text(
-            text = "°C",
+        Text(text = "°C",
             style = Typography.h5,
             color = textColor,
             modifier = Modifier
@@ -185,24 +193,19 @@ fun DynamicWeatherLandscape(
                 .constrainAs(temperatureUnit) {
                     top.linkTo(parent.top, margin = 5.dp)
                     start.linkTo(temperature.end, margin = 4.dp)
-                }
-        )
+                })
 
         val textShadow = Shadow(
-            offset = Offset(5f, 5f),
-            blurRadius = 5f
+            offset = Offset(5f, 5f), blurRadius = 5f
         )
 
-        Text(
-            text = info.weatherType.weatherDesc,
+        Text(text = info.weatherType.weatherDesc,
             style = Typography.h5.copy(shadow = textShadow),
             color = textColor,
-            modifier = Modifier
-                .constrainAs(weatherDescription) {
-                    top.linkTo(temperature.bottom, margin = 8.dp)
-                    start.linkTo(parent.start, margin = 16.dp)
-                }
-        )
+            modifier = Modifier.constrainAs(weatherDescription) {
+                top.linkTo(temperature.bottom, margin = 8.dp)
+                start.linkTo(parent.start, margin = 16.dp)
+            })
 
         if (sunIsVisible) {
             Image(
@@ -211,10 +214,8 @@ fun DynamicWeatherLandscape(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(64.dp)
-                    .offset(
-                        x = with(LocalDensity.current) { sunProgressX.toDp() },
-                        y = with(LocalDensity.current) { sunProgressY.toDp() }
-                    )
+                    .offset(x = with(LocalDensity.current) { sunProgressX.toDp() },
+                        y = with(LocalDensity.current) { sunProgressY.toDp() })
             )
         }
 
@@ -225,11 +226,41 @@ fun DynamicWeatherLandscape(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(64.dp)
-                    .offset(
-                        x = with(LocalDensity.current) { moonProgressX.toDp() },
-                        y = with(LocalDensity.current) { moonProgressY.toDp() }
-                    )
+                    .offset(x = with(LocalDensity.current) { moonProgressX.toDp() },
+                        y = with(LocalDensity.current) { moonProgressY.toDp() })
             )
+        }
+
+        // add fog
+        val weatherState = info.state
+        Crossfade(targetState = weatherState) { state ->
+            val fogAlpha = when (state) {
+                WeatherState.MOSTLY_CLOUDY -> 0.3f
+                WeatherState.HEAVY_RAIN -> 0.3f
+                WeatherState.RAIN -> 0.3f
+                WeatherState.THUNDERSTORM -> 0.4f
+                WeatherState.SNOW -> 0.4f
+                WeatherState.FOG -> 0.6f
+                else -> 0f
+            }
+            if (fogAlpha > 0f) {
+                Surface(color = Color.DarkGray.copy(alpha = fogAlpha),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .constrainAs(fog) {
+                            start.linkTo(parent.start)
+                            top.linkTo(parent.top)
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                        },
+                    content = {}
+                )
+            }
+        }
+
+        // add thunder
+        if (weatherState == WeatherState.THUNDERSTORM && isVisibleThunder) {
+            Thunder(width = constraints.maxWidth, height = constraints.maxHeight)
         }
     }
 }
