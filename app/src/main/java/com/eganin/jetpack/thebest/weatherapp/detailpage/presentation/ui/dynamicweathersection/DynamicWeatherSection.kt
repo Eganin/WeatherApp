@@ -67,8 +67,8 @@ fun DynamicWeatherLandscape(
 
         val (backgroundLayer1, backgroundLayer2, mountain, particles, clouds, fog, temperature, temperatureUnit, weatherDescription) = createRefs()
         val (backgroundLayerOneImage, backgroundLayerTwoImage) = when {
-            info.time.hour in 6..12
-                    && (sunsetAndSunriseTimeData.sunsetHour - info.time.hour) in -1..2 -> {
+            info.time.hour in 6..11
+                    && (sunsetAndSunriseTimeData.sunriseHour - info.time.hour) in -1..2 -> {
                 moonIsVisible = true
                 moonProgressX = endXPositionIcon
                 moonProgressY = endYPositionIcon
@@ -76,32 +76,32 @@ fun DynamicWeatherLandscape(
                 sunProgressX = startXPositionIcon
                 sunProgressY = startYPositionIcon
 
-                PaintStatusBarColor(color = SystemBarColorSunset)
-                R.drawable.day to R.drawable.sunset
+                PaintStatusBarColor(color = SystemBarColorSunrise)
+                R.drawable.day to R.drawable.sunrise
             }
 
-            (info.time.hour in 6..12
-                    && (sunsetAndSunriseTimeData.sunsetHour - info.time.hour) !in -1..2)
-                    || (info.time.hour in 13..17) -> {
+            (info.time.hour in 6..11
+                    && (sunsetAndSunriseTimeData.sunriseHour - info.time.hour) !in -1..2)
+                    || (info.time.hour in 12..16) -> {
                 sunProgressY = maxYPositionIcon
                 sunProgressX = maxXPositionIcon
                 PaintStatusBarColor(color = SystemBarColorDay)
                 R.drawable.day to null
             }
 
-            info.time.hour in 18..23
-                    && (sunsetAndSunriseTimeData.sunriseHour - info.time.hour) in -1..2 -> {
+            info.time.hour in 17..21
+                    && (sunsetAndSunriseTimeData.sunsetHour - info.time.hour) in -1..2 -> {
                 sunProgressX = endXPositionIcon
                 sunProgressY = endYPositionIcon
                 moonIsVisible = true
                 moonProgressX = startXPositionIcon
                 moonProgressY = startYPositionIcon
-                PaintStatusBarColor(color = SystemBarColorSunrise)
-                R.drawable.night to R.drawable.sunrise
+                PaintStatusBarColor(color = SystemBarColorSunset)
+                R.drawable.night to R.drawable.sunset
             }
 
-            (info.time.hour in 18..23
-                    && (sunsetAndSunriseTimeData.sunriseHour - info.time.hour) !in -1..2)
+            (info.time.hour in 21..23
+                    && (sunsetAndSunriseTimeData.sunsetHour - info.time.hour) !in -1..2)
                     || (info.time.hour in 0..5) -> {
                 sunIsVisible = false
                 moonIsVisible = true
