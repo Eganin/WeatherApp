@@ -1,12 +1,17 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations
 
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.fillMaxSize
+import android.util.Log
+import androidx.compose.animation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import me.nikhilchaudhari.quarks.CreateParticles
 import me.nikhilchaudhari.quarks.particle.*
+import com.eganin.jetpack.thebest.weatherapp.R
 
 @Composable
 fun Particles(
@@ -23,7 +28,29 @@ fun Particles(
 
             is PrecipitationShape.Line ->
                 GenerateRain(modifier = Modifier.fillMaxSize(), parameters = parameters)
-            else -> {}
+            else -> GenerateClouds(modifier = Modifier.fillMaxSize(), parameters = parameters)
+        }
+    }
+}
+@Composable
+fun GenerateClouds(modifier: Modifier = Modifier, parameters: PrecipitationsParameters) {
+    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+        repeat(parameters.particleCount){index ->
+            if(index % 2 ==0){
+                Image(
+                    modifier = Modifier
+                        .size(50.dp).offset(y=50.dp),
+                    painter = painterResource(id = R.drawable.cloud),
+                    contentDescription = "",
+                )
+            }else{
+                Image(
+                    modifier = Modifier
+                        .size(50.dp),
+                    painter = painterResource(id = R.drawable.cloud),
+                    contentDescription = "",
+                )
+            }
         }
     }
 }
@@ -35,11 +62,11 @@ fun GenerateRain(modifier: Modifier = Modifier, parameters: PrecipitationsParame
     ) {
         val width = constraints.maxWidth
         val height = constraints.maxHeight
-        val widthSourceList = listOf(width / 5f,width / 2f,width.toFloat() /0.5f)
-        widthSourceList.forEach {x ->
+        val widthSourceList = listOf(width / 5f, width / 2f, width.toFloat() / 0.5f)
+        widthSourceList.forEach { x ->
             CreateParticles(
                 modifier = Modifier.fillMaxSize(),
-                x = x, y = 0f - height/2,
+                x = x, y = 0f - height / 2,
                 velocity = Velocity(xDirection = parameters.maxSpeed, yDirection = 1f),
                 force = Force.Gravity(parameters.gravity),
                 particleSize = ParticleSize.ConstantSize(size = parameters.sizeParticle),
@@ -61,11 +88,11 @@ fun GenerateSnow(modifier: Modifier = Modifier, parameters: PrecipitationsParame
     ) {
         val width = constraints.maxWidth
         val height = constraints.maxHeight
-        val widthSourceList = listOf( width / 5f,width / 2f,width.toFloat() /0.5f)
-        widthSourceList.forEach {x ->
+        val widthSourceList = listOf(width / 5f, width / 2f, width.toFloat() / 0.5f)
+        widthSourceList.forEach { x ->
             CreateParticles(
                 modifier = Modifier.fillMaxSize(),
-                x = x, y = 0f - height/2,
+                x = x, y = 0f - height / 2,
                 velocity = Velocity(xDirection = parameters.maxSpeed, yDirection = 1f),
                 force = Force.Gravity(parameters.gravity),
                 particleSize = ParticleSize.ConstantSize(size = parameters.sizeParticle),

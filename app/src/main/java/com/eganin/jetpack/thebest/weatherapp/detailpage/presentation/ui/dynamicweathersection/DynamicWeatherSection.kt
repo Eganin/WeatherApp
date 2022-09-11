@@ -259,8 +259,7 @@ fun DynamicWeatherLandscape(
                             end.linkTo(parent.end)
                             bottom.linkTo(parent.bottom)
                         },
-                    content = {}
-                )
+                    content = {})
             }
         }
 
@@ -268,9 +267,8 @@ fun DynamicWeatherLandscape(
         if (weatherState == WeatherState.THUNDERSTORM && isVisibleThunder) {
             Thunder(width = constraints.maxWidth, height = constraints.maxHeight)
         }
-
-        Particles(parameters = rainParameters)
         // add clouds
+        // and add snow and rain
         Crossfade(targetState = weatherState) { state ->
             val precipitationsParameters = when (state) {
                 WeatherState.RAIN, WeatherState.HEAVY_RAIN, WeatherState.THUNDERSTORM -> rainParameters
@@ -300,13 +298,16 @@ fun DynamicWeatherLandscape(
                             top.linkTo(parent.top)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
-                        },
-                    cloudCount = cloudCount
+                        }, cloudCount = cloudCount
                 )
             }
 
             precipitationsParameters?.let { parameters ->
-                Particles(parameters = parameters)
+                Particles(parameters = parameters, modifier = Modifier.constrainAs(particles) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                })
             }
         }
     }
