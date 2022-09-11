@@ -11,7 +11,6 @@ import androidx.compose.ui.unit.dp
 import com.eganin.jetpack.thebest.weatherapp.R
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.Particles
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.PrecipitationShape
-import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.PrecipitationSourceEdge
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.PrecipitationsParameters
 
 @Composable
@@ -22,11 +21,7 @@ fun Clouds(
     BoxWithConstraints(modifier = modifier) {
         val cloudsParameters = PrecipitationsParameters(
             particleCount = cloudCount,
-            distancePerStep = 1,
-            minSpeed = 0.2f,
             maxSpeed = 0.6f,
-            minAngle = 0,
-            maxAngle = 0,
             shape = PrecipitationShape.Image(
                 image = ImageBitmap.imageResource(R.drawable.cloud),
                 minWidth = with(LocalDensity.current) { 60.dp.toPx() }.toInt(),
@@ -34,7 +29,8 @@ fun Clouds(
                 minHeight = with(LocalDensity.current) { 30.dp.toPx() }.toInt(),
                 maxHeight = with(LocalDensity.current) { 60.dp.toPx() }.toInt(),
             ),
-            sourceEdge = PrecipitationSourceEdge.RIGHT
+            gravity = 0.01f,
+            sizeParticle = 20f
         )
 
         Particles(

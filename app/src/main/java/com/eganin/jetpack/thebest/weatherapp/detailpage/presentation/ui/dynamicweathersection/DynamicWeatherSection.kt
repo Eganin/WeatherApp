@@ -3,6 +3,7 @@ package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.dynamic
 import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -22,6 +23,7 @@ import com.eganin.jetpack.thebest.weatherapp.R
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherState
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.sunsetsunrisetime.SunsetSunriseTimeData
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.Particles
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.rainParameters
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.snowParameters
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.*
@@ -31,6 +33,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.nikhilchaudhari.quarks.CreateParticles
+import me.nikhilchaudhari.quarks.particle.*
 
 @Composable
 fun DynamicWeatherSection(info: WeatherData, sunsetAndSunriseTimeData: SunsetSunriseTimeData) {
@@ -265,16 +269,11 @@ fun DynamicWeatherLandscape(
             Thunder(width = constraints.maxWidth, height = constraints.maxHeight)
         }
 
+        Particles(parameters = rainParameters)
         // add clouds
         Crossfade(targetState = weatherState) { state ->
             val precipitationsParameters = when (state) {
-                WeatherState.RAIN -> rainParameters
-                WeatherState.HEAVY_RAIN -> rainParameters.copy(particleCount = 2000)
-                WeatherState.THUNDERSTORM -> rainParameters.copy(
-                    particleCount = 2000,
-                    minAngle = 265,
-                    maxAngle = 295
-                )
+                WeatherState.RAIN, WeatherState.HEAVY_RAIN, WeatherState.THUNDERSTORM -> rainParameters
                 WeatherState.SNOW -> snowParameters
                 else -> null
             }
@@ -304,6 +303,10 @@ fun DynamicWeatherLandscape(
                         },
                     cloudCount = cloudCount
                 )
+            }
+
+            precipitationsParameters?.let { parameters ->
+                Particles(parameters = parameters)
             }
         }
     }
