@@ -1,5 +1,6 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.rain
 
+import android.util.Log
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -23,8 +24,8 @@ fun randomDropThickness(z: Float) = z.mapRange(0f to 20f, 1f to 5f)
 fun randomGravityOnDrop(z: Float) = z.mapRange(0f to 20f, 0f to 0.2f)
 
 data class Drop(
-    var width: Int,
-    var height: Int,
+    var width: Int=0,
+    var height: Int=0,
     var x: Float = randomX(canvasWidth = width),
     var y: Float = randomY(),
     var z: Float = randomZ(),

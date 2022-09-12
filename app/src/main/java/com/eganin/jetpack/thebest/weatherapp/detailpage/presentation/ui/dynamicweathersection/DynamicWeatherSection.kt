@@ -24,6 +24,8 @@ import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherState
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.sunsetsunrisetime.SunsetSunriseTimeData
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.Particles
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.rain.SceneRain
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.rain.StepFrame
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.rainParameters
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.snowParameters
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.*
@@ -262,6 +264,14 @@ fun DynamicWeatherLandscape(
                     content = {})
             }
         }
+
+        // add rain
+        val scene = remember{ SceneRain() }
+        scene.setupScene()
+        val frameState = StepFrame {
+            scene.update()
+        }
+        scene.render(frameState=frameState)
 
         // add thunder
         if (weatherState == WeatherState.THUNDERSTORM && isVisibleThunder) {
