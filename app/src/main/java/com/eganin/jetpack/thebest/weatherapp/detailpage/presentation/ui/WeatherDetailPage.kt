@@ -1,6 +1,5 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,8 +26,6 @@ import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
-import me.nikhilchaudhari.quarks.CreateParticles
-import me.nikhilchaudhari.quarks.particle.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -43,14 +40,14 @@ fun WeatherDetailPage(viewModel: WeatherViewModel) {
             }
         ) {
             BackdropScaffold(
-                appBar = {},
+                appBar = { },
                 modifier = Modifier.background(AppTheme.colors.cardBackground),
                 frontLayerScrimColor = Color.Transparent,
                 backLayerBackgroundColor = Color.Transparent,
                 frontLayerElevation = 5.dp,
                 frontLayerShape = RoundedCornerShape(
-                    topStart = 10.dp,
-                    topEnd = 10.dp,
+                    topStart = 20.dp,
+                    topEnd = 20.dp,
                     bottomStart = 0.dp,
                     bottomEnd = 0.dp
                 ),
@@ -98,10 +95,10 @@ fun WeatherDetailPageLazyColumn(viewModel: WeatherViewModel) {
     ) {
         if (isVisibleSearchField) {
             item {
+                SearchField(viewModel = viewModel)
                 rememberCoroutineScope().launch {
                     stateLazyColumn.animateScrollToItem(index = 0)
                 }
-                SearchField(viewModel = viewModel)
             }
         }
         item {

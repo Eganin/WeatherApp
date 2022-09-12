@@ -1,6 +1,5 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.data.repository
 
-import com.eganin.jetpack.thebest.weatherapp.common.data.mapper.toWeatherInfo
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.GeocodingApi
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.GeocodingDto

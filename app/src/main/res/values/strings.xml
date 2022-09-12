@@ -20,4 +20,7 @@
     <string name="weather_radar_label">Weather radar</string>
     <string name="satellite_subtitle">Satellite image</string>
     <string name="fake_satellite_image_description">Fake Satellite image</string>
+    <string name="snow_button_label">Snow</string>
+    <string name="rain_button_label">Rain</string>
+    <string name="thunder_button_label">Thunder</string>
 </resources>

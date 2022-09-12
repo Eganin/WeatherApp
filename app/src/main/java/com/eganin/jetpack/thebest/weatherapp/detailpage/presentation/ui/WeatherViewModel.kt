@@ -30,6 +30,8 @@ class WeatherViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
+    val listSearchQuery = mutableSetOf<String>()
+
     fun onEvent(event: DetailPageEvent) {
         when (event) {
             is DetailPageEvent.Refresh -> {
@@ -164,6 +166,8 @@ class WeatherViewModel @Inject constructor(
                     repository.getWeatherData(location.latitude, location.longitude)) {
 
                     is Resource.Success -> {
+                        listSearchQuery.add(state.searchQuery)
+                        //Log.d("EEE",listSearchQuery.toString())
                         state = state.copy(
                             weatherInfo = result.data,
                             isLoading = false,
@@ -182,7 +186,6 @@ class WeatherViewModel @Inject constructor(
                 onEvent(event = DetailPageEvent.ErrorGeocodingFromCity)
             }
         }
-
     }
 
     private fun loadSunsetAndSunriseTimes() {

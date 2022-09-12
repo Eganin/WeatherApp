@@ -1,6 +1,5 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.dynamicweathersection
 
-import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -35,9 +34,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun DynamicWeatherSection(info: WeatherData, sunsetAndSunriseTimeData: SunsetSunriseTimeData) {
+fun DynamicWeatherSection(
+    info: WeatherData,
+    sunsetAndSunriseTimeData: SunsetSunriseTimeData,
+    modifier: Modifier? = null,
+) {
     BoxWithConstraints(
-        modifier = Modifier
+        modifier = modifier ?: Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.4f)
     ) {
@@ -53,11 +56,10 @@ fun DynamicWeatherSection(info: WeatherData, sunsetAndSunriseTimeData: SunsetSun
 fun DynamicWeatherLandscape(
     info: WeatherData, sunsetAndSunriseTimeData: SunsetSunriseTimeData, constraints: Constraints
 ) {
+    var isVisibleThunder by remember { mutableStateOf(false) }
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
     ) {
-
-        var isVisibleThunder by remember { mutableStateOf(false) }
         // while for thunder
         rememberCoroutineScope().launch {
             withContext(Dispatchers.IO) {
@@ -287,43 +289,42 @@ fun DynamicWeatherLandscape(
             if (cloudCount > 0) {
                 CreateClouds(particleCount = cloudCount)
             }
-            // add rain
-            when(weatherState){
-                WeatherState.HEAVY_RAIN, WeatherState.THUNDERSTORM-> CreateRain(particleCount = 200)
-                WeatherState.RAIN->CreateRain(particleCount = 100)
-                else ->{}
+            // add rain and snow
+            when (weatherState) {
+                WeatherState.HEAVY_RAIN, WeatherState.THUNDERSTORM -> CreateRain(particleCount = 200)
+                WeatherState.RAIN -> CreateRain(particleCount = 100)
+                WeatherState.SNOW -> Particles(parameters = snowParameters,
+                    modifier = Modifier.constrainAs(particles) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    })
+                else -> {}
+
             }
 
-            // add snow
-            precipitationsParameters?.let { parameters ->
-                Particles(parameters = parameters, modifier = Modifier.constrainAs(particles) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                })
-            }
         }
     }
 }
 
 @Composable
-fun CreateRain(particleCount : Int) {
-    val scene = remember{ SceneRain(particleCount = particleCount) }
+fun CreateRain(particleCount: Int) {
+    val scene = remember { SceneRain(particleCount = particleCount) }
     scene.setupScene()
     val frameState = StepFrame {
         scene.update()
     }
-    scene.render(frameState=frameState)
+    scene.render(frameState = frameState)
 }
 
 @Composable
-fun CreateClouds(particleCount : Int) {
-    val scene = remember { SceneCloud(particleCount = particleCount)}
+fun CreateClouds(particleCount: Int) {
+    val scene = remember { SceneCloud(particleCount = particleCount) }
     scene.setupScene()
     val frameState = StepFrame {
         scene.update()
     }
-    scene.render(frameState=frameState)
+    scene.render(frameState = frameState)
 }
 
 @Composable
@@ -335,4 +336,5 @@ fun PaintStatusBarColor(color: Color) {
             setSystemBarsColor(color = color)
         }
     }
+
 }
