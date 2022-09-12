@@ -1,9 +1,7 @@
 package com.eganin.jetpack.thebest.weatherapp.ui
 
 import android.Manifest
-import android.graphics.Color
 import android.os.Bundle
-import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -19,12 +17,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.eganin.jetpack.thebest.weatherapp.citiespage.CitiesPage
-import com.eganin.jetpack.thebest.weatherapp.citiespage.CitiesViewModel
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.getThemeType
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.DetailPageEvent
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherDetailPage
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherViewModel
-import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppCorners
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.WeatherAppTheme
 import com.eganin.jetpack.thebest.weatherapp.weeklist.WeekListViewModel
@@ -32,8 +28,6 @@ import com.eganin.jetpack.thebest.weatherapp.weeklist.ui.WeekListPage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.google.accompanist.systemuicontroller.SystemUiController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -43,7 +37,6 @@ class MainActivity : ComponentActivity() {
 
     private val weatherViewModel: WeatherViewModel by viewModels()
     private val weekListViewModel: WeekListViewModel by viewModels()
-    private val citiesViewModel : CitiesViewModel by viewModels()
 
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
 
@@ -93,9 +86,7 @@ class MainActivity : ComponentActivity() {
                                 1 -> WeatherDetailPage(
                                     viewModel = weatherViewModel
                                 )
-                                2 -> CitiesPage(viewModel = citiesViewModel.apply {
-                                    listSearchQuery=weatherViewModel.listSearchQuery
-                                })
+                                2 -> CitiesPage(viewModel = weatherViewModel)
 
                             }
                         }
