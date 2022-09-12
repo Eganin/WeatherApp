@@ -19,12 +19,3 @@ val snowParameters = PrecipitationsParameters(
     sizeParticle = 20f,
     color = Color.White
 )
-
-val rainParameters = PrecipitationsParameters(
-    particleCount = 200,
-    maxSpeed = 1.5f,
-    shape = PrecipitationShape.Line,
-    gravity = 0.01f,
-    sizeParticle = 20f,
-    color =Color.Gray
-)

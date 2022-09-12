@@ -1,34 +1,30 @@
-package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.rain
+package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.particles.rain
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.particles.Scene
 
-class SceneRain {
+class SceneRain(private val particleCount : Int) : Scene() {
 
-    private var sceneEntity = mutableStateListOf<SceneEntity>()
     private val drops = mutableListOf<Drop>()
 
-    fun setupScene() {
-        sceneEntity.clear()
+    override fun setupScene() {
         drops.clear()
-        repeat(100 * 5) { drops.add(Drop()) }
-        sceneEntity.addAll(drops)
+        repeat(particleCount * 5) { drops.add(Drop()) }
     }
 
-    fun update() {
-        for (entity in sceneEntity) {
-            entity.update(this)
+    override fun update() {
+        for (entity in drops) {
+            entity.update(scene=this)
         }
     }
 
     @Composable
-    fun render(frameState: State<Long>) {
+    override fun render(frameState: State<Long>) {
         Box {
             Canvas(modifier = Modifier.fillMaxSize()) {
                 val stepFrame = frameState.value

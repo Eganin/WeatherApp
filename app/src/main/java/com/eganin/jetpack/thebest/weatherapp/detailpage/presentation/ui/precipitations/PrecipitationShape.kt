@@ -2,8 +2,4 @@ package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipi
 
 sealed class PrecipitationShape {
     object Circle : PrecipitationShape()
-
-    object Line : PrecipitationShape()
-
-    object Cloud : PrecipitationShape()
 }

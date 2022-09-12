@@ -3,7 +3,6 @@ package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.dynamic
 import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -24,19 +23,16 @@ import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherState
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.sunsetsunrisetime.SunsetSunriseTimeData
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.Particles
-import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.rain.SceneRain
-import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.rain.StepFrame
-import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.rainParameters
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.particles.clouds.SceneCloud
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.particles.rain.SceneRain
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.particles.rain.StepFrame
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.snowParameters
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.nikhilchaudhari.quarks.CreateParticles
-import me.nikhilchaudhari.quarks.particle.*
 
 @Composable
 fun DynamicWeatherSection(info: WeatherData, sunsetAndSunriseTimeData: SunsetSunriseTimeData) {
@@ -66,7 +62,7 @@ fun DynamicWeatherLandscape(
         rememberCoroutineScope().launch {
             withContext(Dispatchers.IO) {
                 while (true) {
-                    delay(5000L)
+                    delay(1000L)
                     withContext(Dispatchers.Main) {
                         isVisibleThunder = !isVisibleThunder
                     }
@@ -264,15 +260,6 @@ fun DynamicWeatherLandscape(
                     content = {})
             }
         }
-
-        // add rain
-        val scene = remember{ SceneRain() }
-        scene.setupScene()
-        val frameState = StepFrame {
-            scene.update()
-        }
-        scene.render(frameState=frameState)
-
         // add thunder
         if (weatherState == WeatherState.THUNDERSTORM && isVisibleThunder) {
             Thunder(width = constraints.maxWidth, height = constraints.maxHeight)
@@ -281,7 +268,6 @@ fun DynamicWeatherLandscape(
         // and add snow and rain
         Crossfade(targetState = weatherState) { state ->
             val precipitationsParameters = when (state) {
-                WeatherState.RAIN, WeatherState.HEAVY_RAIN, WeatherState.THUNDERSTORM -> rainParameters
                 WeatherState.SNOW -> snowParameters
                 else -> null
             }
@@ -299,19 +285,16 @@ fun DynamicWeatherLandscape(
             }
 
             if (cloudCount > 0) {
-                Clouds(
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.5f)
-                        .constrainAs(clouds) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }, cloudCount = cloudCount
-                )
+                CreateClouds(particleCount = cloudCount)
+            }
+            // add rain
+            when(weatherState){
+                WeatherState.HEAVY_RAIN, WeatherState.THUNDERSTORM-> CreateRain(particleCount = 200)
+                WeatherState.RAIN->CreateRain(particleCount = 100)
+                else ->{}
             }
 
+            // add snow
             precipitationsParameters?.let { parameters ->
                 Particles(parameters = parameters, modifier = Modifier.constrainAs(particles) {
                     top.linkTo(parent.top)
@@ -321,6 +304,26 @@ fun DynamicWeatherLandscape(
             }
         }
     }
+}
+
+@Composable
+fun CreateRain(particleCount : Int) {
+    val scene = remember{ SceneRain(particleCount = particleCount) }
+    scene.setupScene()
+    val frameState = StepFrame {
+        scene.update()
+    }
+    scene.render(frameState=frameState)
+}
+
+@Composable
+fun CreateClouds(particleCount : Int) {
+    val scene = remember { SceneCloud(particleCount = particleCount)}
+    scene.setupScene()
+    val frameState = StepFrame {
+        scene.update()
+    }
+    scene.render(frameState=frameState)
 }
 
 @Composable
