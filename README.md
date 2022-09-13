@@ -25,17 +25,17 @@ The app also displays basic weather information in four sections:
   - Room Persistence - construct database.
 
 ## :camera_flash: Screenshots
-<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/weather_card.jpg" width="260">&emsp;
-<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/radar.jpg" width="260">&emsp;
-<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/rain.jpg" width="260">&emsp;
-<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/snow.jpg" width="260">&emsp;
-<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/dynamic_list.jpg" width="260">&emsp;
-<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/list.jpg" width="260">
+<img src="/assets/images/weather_card.jpg" width="260">&emsp;
+<img src="/assets/images/radar.jpg" width="260">&emsp;
+<img src="n/assets/images/rain.jpg" width="260">&emsp;
+<img src="/assets/images/snow.jpg" width="260">&emsp;
+<img src="/assets/images/dynamic_list.jpg" width="260">&emsp;
+<img src="/assets/images/list.jpg" width="260">
 # Day theme
-<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/day.jpg" width="260">
+<img src="/assets/images/day.jpg" width="260">
 # Morning theme
-<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/morning.jpg" width="260">
+<img src="/assets/images/morning.jpg" width="260">
 # Evening theme
-<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/evening.jpg" width="260">
+<img src="/assets/images/evening.jpg" width="260">
 # Night theme
-<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/night.jpg" width="260">
+<img src="/assets/images/night.jpg" width="260">
