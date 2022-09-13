@@ -282,11 +282,6 @@ fun DynamicWeatherLandscape(
         // add clouds
         // and add snow and rain
         Crossfade(targetState = weatherState) { state ->
-            val precipitationsParameters = when (state) {
-                WeatherState.SNOW -> snowParameters
-                else -> null
-            }
-
             val cloudCount = when (state) {
                 WeatherState.RAIN -> 3
                 WeatherState.HEAVY_RAIN -> 5

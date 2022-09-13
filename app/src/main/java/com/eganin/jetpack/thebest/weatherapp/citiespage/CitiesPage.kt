@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.DetailPageEvent
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherViewModel
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.dynamicweathersection.DynamicWeatherSection
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
@@ -30,7 +31,7 @@ fun CitiesPage(viewModel: WeatherViewModel, citiesViewModel: CitiesViewModel) {
             modifier = Modifier
                 .fillMaxSize()
                 .background(AppTheme.colors.primaryBackground)
-                .padding(top = 20.dp)
+                .padding(top = 20.dp, bottom = 50.dp)
         ) {
             items(data.size) { index ->
                 data[index].let {
@@ -39,7 +40,11 @@ fun CitiesPage(viewModel: WeatherViewModel, citiesViewModel: CitiesViewModel) {
                             .padding(16.dp)
                             .height(150.dp)
                             .width(450.dp)
-                            .clickable { },
+                            .clickable {
+                                viewModel.onEvent(
+                                    event = DetailPageEvent.OnSearchQueryChange(query = info[index])
+                                )
+                            },
                         shape = RoundedCornerShape(20.dp)
                     ) {
                         DynamicWeatherSection(
