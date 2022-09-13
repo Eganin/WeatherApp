@@ -36,7 +36,8 @@ fun WeatherDetailPage(viewModel: WeatherViewModel) {
         SwipeRefresh(state = swipeRefreshState, onRefresh = {
             viewModel.onEvent(DetailPageEvent.Refresh)
         }) {
-            BackdropScaffold(appBar = { },
+            BackdropScaffold(
+                appBar = { },
                 modifier = Modifier.background(AppTheme.colors.cardBackground),
                 frontLayerScrimColor = Color.Transparent,
                 backLayerBackgroundColor = Color.Transparent,
@@ -87,10 +88,10 @@ fun WeatherDetailPageLazyColumn(viewModel: WeatherViewModel) {
     ) {
         if (isVisibleSearchField) {
             item {
-                SearchField(viewModel = viewModel)
                 rememberCoroutineScope().launch {
                     stateLazyColumn.animateScrollToItem(index = 0)
                 }
+                SearchField(viewModel = viewModel)
             }
         }
         item {

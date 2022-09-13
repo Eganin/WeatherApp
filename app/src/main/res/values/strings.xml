@@ -23,4 +23,7 @@
     <string name="snow_button_label">Snow</string>
     <string name="rain_button_label">Rain</string>
     <string name="thunder_button_label">Thunder</string>
+    <string name="city_management_destination">CityManagement</string>
+    <string name="home_destination">Home</string>
+    <string name="week_list_destibation">WeekList</string>
 </resources>

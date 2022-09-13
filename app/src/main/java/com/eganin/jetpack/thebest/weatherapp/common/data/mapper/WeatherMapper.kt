@@ -15,6 +15,9 @@ private data class IndexedWeatherData(
     val data: WeatherData
 )
 
+/*
+ method return map with daytime and hourly weather information
+ */
 fun WeatherDataDto.toWeatherDataMap(): Map<Int, List<WeatherData>> {
     return time.mapIndexed { index, time ->
         val temperature = temperatures[index]
@@ -45,6 +48,7 @@ fun WeatherDataDto.toWeatherDataMap(): Map<Int, List<WeatherData>> {
 fun WeatherDto.toWeatherInfo(): WeatherInfo {
     val weatherDataMap = weatherData.toWeatherDataMap()
     val now = LocalDateTime.now()
+    // get info for current day
     val currentWeatherData = weatherDataMap[0]?.find {
         val hour = if (now.hour == 23) {
             if (now.minute < 30) now.hour else 0
@@ -59,6 +63,9 @@ fun WeatherDto.toWeatherInfo(): WeatherInfo {
     )
 }
 
+/*
+ method return average value for day
+ */
 fun List<WeatherData>.toAverageValues(): List<Int> {
     var nightCelsius = 0.0
     var morningCelsius = 0.0

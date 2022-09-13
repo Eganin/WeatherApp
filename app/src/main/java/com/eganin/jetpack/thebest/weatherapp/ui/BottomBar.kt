@@ -6,6 +6,7 @@ import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -39,17 +40,17 @@ fun BottomBar(navController: NavController) {
 @Composable
 private fun getIconForBottomBar(screen: String, isSelected: Boolean = false) {
     return when (screen) {
-        "CityManagement" -> Icon(
+        stringResource(R.string.city_management_destination) -> Icon(
             painter = painterResource(id = R.drawable.ic_baseline_location_city_24),
             contentDescription = "Search",
             tint = if (isSelected) AppTheme.colors.tintColor else AppTheme.colors.primaryText
         )
-        "Home" -> Icon(
+        stringResource(R.string.home_destination) -> Icon(
             painter = painterResource(id = R.drawable.ic_baseline_home_24),
             contentDescription = "Search",
             tint = if (isSelected) AppTheme.colors.tintColor else AppTheme.colors.primaryText
         )
-        "WeekList" -> Icon(
+        stringResource(R.string.week_list_destibation) -> Icon(
             painter = painterResource(id = R.drawable.ic_baseline_view_list_24),
             contentDescription = "Search",
             tint = if (isSelected) AppTheme.colors.tintColor else AppTheme.colors.primaryText
