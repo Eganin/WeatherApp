@@ -17,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.eganin.jetpack.thebest.weatherapp.citiespage.CitiesPage
+import com.eganin.jetpack.thebest.weatherapp.citiespage.CitiesViewModel
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.getThemeType
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.DetailPageEvent
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherDetailPage
@@ -37,6 +38,7 @@ class MainActivity : ComponentActivity() {
 
     private val weatherViewModel: WeatherViewModel by viewModels()
     private val weekListViewModel: WeekListViewModel by viewModels()
+    private val citiesViewModel: CitiesViewModel by viewModels()
 
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
 
@@ -86,7 +88,10 @@ class MainActivity : ComponentActivity() {
                                 1 -> WeatherDetailPage(
                                     viewModel = weatherViewModel
                                 )
-                                2 -> CitiesPage(viewModel = weatherViewModel)
+                                2 -> CitiesPage(
+                                    viewModel = weatherViewModel,
+                                    citiesViewModel = citiesViewModel
+                                )
 
                             }
                         }

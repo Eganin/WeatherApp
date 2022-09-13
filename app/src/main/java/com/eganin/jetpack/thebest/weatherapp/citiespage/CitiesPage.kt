@@ -6,7 +6,9 @@ import androidx.compose.runtime.LaunchedEffect
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherViewModel
 
 @Composable
-fun CitiesPage(viewModel: WeatherViewModel) {
-    val info = viewModel.citiesPageState.info
-    Log.d("EEE",info.toString())
+fun CitiesPage(viewModel: WeatherViewModel , citiesViewModel: CitiesViewModel) {
+    val info = viewModel.citiesItemList
+    LaunchedEffect(key1 = info){
+        citiesViewModel.loadDataForCitiesPage(listSearchQuery = info)
+    }
 }
