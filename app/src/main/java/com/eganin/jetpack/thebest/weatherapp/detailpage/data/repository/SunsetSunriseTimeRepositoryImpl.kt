@@ -1,5 +1,6 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.data.repository
 
+import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.getDataForRepository
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.mapper.toSunsetAndSunriseTime
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.SunsetSunriseTimeApi
@@ -16,15 +17,11 @@ class SunsetSunriseTimeRepositoryImpl @Inject constructor(
     override suspend fun getSunsetSunriseTime(
         lat: Double, lon: Double
     ): Resource<SunsetSunriseTimeData> {
-        return withContext(Dispatchers.IO) {
-            try {
-                Resource.Success(
-                    data = api.getTimesData(lat = lat, long = lon).results.toSunsetAndSunriseTime()
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Resource.Error(message = e.message ?: "Unknown error")
-            }
-        }
+        return getDataForRepository(
+            data = api.getTimesData(
+                lat = lat,
+                long = lon
+            ).results.toSunsetAndSunriseTime()
+        )
     }
 }

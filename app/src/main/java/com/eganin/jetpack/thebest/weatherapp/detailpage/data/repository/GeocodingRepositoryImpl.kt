@@ -1,5 +1,6 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.data.repository
 
+import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.getDataForRepository
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.GeocodingApi
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.GeocodingDto
@@ -12,15 +13,8 @@ class GeocodingRepositoryImpl @Inject constructor(
     private val geocodingApi: GeocodingApi
 ) : GeocodingRepository {
     override suspend fun getGeoFromCity(cityName: String): Resource<GeocodingDto> {
-        return withContext(Dispatchers.IO) {
-            try {
-                Resource.Success(
-                    data = geocodingApi.getCoordFromCity(cityName = cityName).get(index = 0)
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Resource.Error(message = e.message ?: "Unknown error")
-            }
-        }
+        return getDataForRepository(
+            data = geocodingApi.getCoordFromCity(cityName = cityName).get(index = 0)
+        )
     }
 }

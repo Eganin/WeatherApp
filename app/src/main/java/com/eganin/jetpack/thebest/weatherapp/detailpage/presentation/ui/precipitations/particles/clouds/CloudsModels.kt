@@ -5,7 +5,7 @@ import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipit
 
 fun randomXCloud(canvasWidth : Int) = (0..canvasWidth).random().toFloat()
 
-fun randomYCloud(canvasHeight : Int) = (0..canvasHeight).random().toFloat()
+fun randomYCloud(canvasHeight : Int) = (0..canvasHeight/2).random().toFloat()
 
 data class Cloud(
     var width: Int=0,
