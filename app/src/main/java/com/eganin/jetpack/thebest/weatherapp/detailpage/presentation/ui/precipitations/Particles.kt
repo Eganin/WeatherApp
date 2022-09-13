@@ -23,7 +23,6 @@ fun Particles(
         when (parameters.shape) {
             is PrecipitationShape.Circle ->
                 GenerateSnow(modifier = Modifier.fillMaxSize(), parameters = parameters)
-            else -> {}
         }
     }
 }
