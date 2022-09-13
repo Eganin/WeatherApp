@@ -25,7 +25,6 @@ class WeatherViewModel @Inject constructor(
     private val sunsetSunriseTimeRepository: SunsetSunriseTimeRepository
 ) : ViewModel() {
 
-
     var citiesItemList by mutableStateOf(listOf<String>())
 
     var state by mutableStateOf(WeatherState())
