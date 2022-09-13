@@ -38,21 +38,18 @@ fun WeekListPage(
         ) {
             WeatherForecast(
                 state = weatherViewModel.state,
-                //modifier = Modifier.background(AppTheme.colors.cardBackground)
             )
             Spacer(modifier = Modifier.height(22.dp))
             weekListViewModel.state.info?.let { info ->
                 LazyColumn {
                     items(info.size) { indexDay ->
-                        info.get(indexDay)?.maxBy { it.temperatureCelsius }?.let {
-                            DailyWeatherDisplay(
-                                weatherData = it,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(6.dp),
-                                indexDay = indexDay
-                            )
-                        }
+                        DailyWeatherDisplay(
+                            weatherData = info.get(indexDay),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(6.dp),
+                            indexDay = indexDay
+                        )
                     }
                 }
             }
