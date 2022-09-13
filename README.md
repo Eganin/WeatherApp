@@ -31,11 +31,11 @@ The app also displays basic weather information in four sections:
 <img src="/assets/images/snow.jpg" width="260">&emsp;
 <img src="/assets/images/dynamic_list.jpg" width="260">&emsp;
 <img src="/assets/images/list.jpg" width="260">
-# Day theme
+### Day Theme
 <img src="/assets/images/day.jpg" width="260">
-# Morning theme
+### Morning theme
 <img src="/assets/images/morning.jpg" width="260">
-# Evening theme
+### Evening theme
 <img src="/assets/images/evening.jpg" width="260">
-# Night theme
+### Night theme
 <img src="/assets/images/night.jpg" width="260">
