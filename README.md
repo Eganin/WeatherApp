@@ -10,22 +10,6 @@ The app also displays basic weather information in four sections:
 - Weather Radar
 - For this week : 7 day forecast
 
-## :camera_flash: Screenshots
-![Detail](https://github.com/Eganin/WeatherApp/tree/main/assets/images/weather_card.jpg)
-![Radar](https://github.com/Eganin/WeatherApp/tree/main/assets/images/radar.jpg)
-![Rain](https://github.com/Eganin/WeatherApp/blob/main/assets/images/rain.jpg)
-![Snow](https://github.com/Eganin/WeatherApp/blob/main/assets/images/snow.jpg)
-![Dynamic List](https://github.com/Eganin/WeatherApp/blob/main/assets/images/dynamic_list.jpg)
-![List Weather](https://github.com/Eganin/WeatherApp/blob/main/assets/images/list.jpg)
-# Day theme
-![Day](https://github.com/Eganin/WeatherApp/blob/main/assets/images/day.jpg)
-# Morning theme
-![Morning](https://github.com/Eganin/WeatherApp/blob/main/assets/images/morning.jpg)
-# Evening theme
-![Morning](https://github.com/Eganin/WeatherApp/blob/main/assets/images/evening.jpg)
-# Night theme
-![Morning](https://github.com/Eganin/WeatherApp/blob/main/assets/images/night.jpg)
-
 ## Tech stack & Open-source libraries
 - Minimum SDK level 26
 - 100% Kotlin based + Coroutines.
@@ -39,3 +23,19 @@ The app also displays basic weather information in four sections:
   - Compose - A modern toolkit for building native Android UI.
   - ViewModel - UI related data holder, lifecycle aware.
   - Room Persistence - construct database.
+
+## :camera_flash: Screenshots
+<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/weather_card.jpg" width="260">&emsp;
+<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/radar.jpg" width="260">&emsp;
+<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/rain.jpg" width="260">&emsp;
+<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/snow.jpg" width="260">&emsp;
+<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/dynamic_list.jpg" width="260">&emsp;
+<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/list.jpg" width="260">
+# Day theme
+<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/day.jpg" width="260">
+# Morning theme
+<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/morning.jpg" width="260">
+# Evening theme
+<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/evening.jpg" width="260">
+# Night theme
+<img src="https://github.com/Eganin/WeatherApp/tree/main/assets/images/night.jpg" width="260">
