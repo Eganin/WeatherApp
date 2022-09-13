@@ -15,15 +15,18 @@ import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.DetailPa
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherViewModel
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppColors
 import com.eganin.jetpack.thebest.weatherapp.ui.theme.AppTheme
+import com.eganin.jetpack.thebest.weatherapp.ui.theme.Typography
 
 @Composable
 fun SearchField(viewModel: WeatherViewModel) {
     val state = viewModel.state
 
     val trailingIconView = @Composable {
-        IconButton(
-            onClick = {}
-        ) {
+        IconButton(onClick = {
+            if (state.searchQuery.isNotEmpty()) {
+                viewModel.onEvent(event = DetailPageEvent.OnSearchQueryChange(query = state.searchQuery))
+            }
+        }) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_baseline_search_24),
                 contentDescription = "",
@@ -47,7 +50,7 @@ fun SearchField(viewModel: WeatherViewModel) {
             .padding(16.dp)
             .fillMaxWidth(),
         placeholder = {
-            Text(text = "Search...")
+            Text(text = "Search...", style = Typography.h5, color = AppTheme.colors.secondaryText)
         },
         shape = RoundedCornerShape(10.dp),
         trailingIcon = trailingIconView,

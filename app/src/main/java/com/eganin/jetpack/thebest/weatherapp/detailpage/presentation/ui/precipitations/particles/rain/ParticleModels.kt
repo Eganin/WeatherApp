@@ -1,14 +1,11 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.particles.rain
 
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
-import com.eganin.jetpack.thebest.weatherapp.R
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.particles.Scene
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.particles.SceneEntity
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipitations.particles.clouds.Cloud

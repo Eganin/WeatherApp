@@ -25,7 +25,21 @@ class CitiesViewModel  @Inject constructor(
     var state by mutableStateOf(CitiesPageState())
         private set
 
-    fun loadDataForCitiesPage(listSearchQuery : List<String>) {
+    fun onEvent(event: CitiesPageEvent){
+        when(event){
+            is CitiesPageEvent.LoadData ->{
+                loadDataForCitiesPage(listSearchQuery = event.info)
+            }
+            is CitiesPageEvent.Error ->{
+                state = state.copy(
+                    isLoading = false,
+                    error = "Error Loading cities info"
+                )
+            }
+        }
+    }
+
+    private fun loadDataForCitiesPage(listSearchQuery : List<String>) {
         viewModelScope.launch {
             state = state.copy(
                 isLoading = true,

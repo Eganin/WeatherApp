@@ -1,6 +1,7 @@
 package com.eganin.jetpack.thebest.weatherapp.di
 
 import android.app.Application
+import com.eganin.jetpack.thebest.weatherapp.BuildConfig
 import com.eganin.jetpack.thebest.weatherapp.common.data.remote.WeatherApi
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.GeocodingApi
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.SunsetSunriseTimeApi
@@ -29,7 +30,7 @@ object AppModule {
     @Singleton
     fun provideWeatherApi(client: OkHttpClient): WeatherApi {
         return Retrofit.Builder()
-            .baseUrl("https://api.open-meteo.com/")
+            .baseUrl(BuildConfig.WEATHER_API_BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create())
             .client(client)
             .build()
@@ -55,7 +56,7 @@ object AppModule {
             ignoreUnknownKeys = true
         }
         return Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/")
+            .baseUrl(BuildConfig.GEOCODING_API_BASE_URL)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .client(client)
             .build()
@@ -70,7 +71,7 @@ object AppModule {
             ignoreUnknownKeys = true
         }
         return Retrofit.Builder()
-            .baseUrl("https://api.sunrise-sunset.org/")
+            .baseUrl(BuildConfig.SUNRISE_AND_SUNSET_API_BASE_URL)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .client(client)
             .build()

@@ -3,7 +3,6 @@ package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.precipi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 
-
 interface SceneEntity {
     fun update(scene: Scene)
 }

@@ -23,4 +23,11 @@
     <string name="snow_button_label">Snow</string>
     <string name="rain_button_label">Rain</string>
     <string name="thunder_button_label">Thunder</string>
+    <string name="city_management_destination">CityManagement</string>
+    <string name="home_destination">Home</string>
+    <string name="week_list_destibation">WeekList</string>
+    <string name="hpa_label_weather_data_display">hpa</string>
+    <string name="percent_label_weather_data_display">%</string>
+    <string name="speed_label_weather_data_display">km/h</string>
+    <string name="error_label_no_data_available">No Data Available</string>
 </resources>
