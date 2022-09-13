@@ -33,43 +33,35 @@ fun WeatherDetailPage(viewModel: WeatherViewModel) {
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = viewModel.state.isRefreshing)
 
     Box(modifier = Modifier.fillMaxSize()) {
-        SwipeRefresh(
-            state = swipeRefreshState,
-            onRefresh = {
-                viewModel.onEvent(DetailPageEvent.Refresh)
-            }
-        ) {
-            BackdropScaffold(
-                appBar = { },
+        SwipeRefresh(state = swipeRefreshState, onRefresh = {
+            viewModel.onEvent(DetailPageEvent.Refresh)
+        }) {
+            BackdropScaffold(appBar = { },
                 modifier = Modifier.background(AppTheme.colors.cardBackground),
                 frontLayerScrimColor = Color.Transparent,
                 backLayerBackgroundColor = Color.Transparent,
                 frontLayerElevation = 5.dp,
                 frontLayerShape = RoundedCornerShape(
-                    topStart = 20.dp,
-                    topEnd = 20.dp,
-                    bottomStart = 0.dp,
-                    bottomEnd = 0.dp
+                    topStart = 20.dp, topEnd = 20.dp, bottomStart = 0.dp, bottomEnd = 0.dp
                 ),
                 backLayerContent = {
                     viewModel.state.weatherInfo?.currentWeatherData?.let { weatherData ->
                         viewModel.state.sunsetAndSunriseTime?.let { sunsetAndSunriseTime ->
                             DynamicWeatherSection(
                                 info = weatherData,
-                                sunsetAndSunriseTimeData = sunsetAndSunriseTime
+                                sunsetAndSunriseTimeData = sunsetAndSunriseTime,
+                                cityName = if (viewModel.citiesItemList.isNotEmpty()) viewModel.citiesItemList.last() else ""
                             )
                         }
                     }
                 },
                 frontLayerContent = {
                     WeatherDetailPageLazyColumn(viewModel = viewModel)
-                }
-            )
+                })
         }
         if (viewModel.state.isLoading) {
             CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = Color.White
+                modifier = Modifier.align(Alignment.Center), color = Color.White
             )
         }
         viewModel.state.error?.let { error ->
@@ -103,8 +95,7 @@ fun WeatherDetailPageLazyColumn(viewModel: WeatherViewModel) {
         }
         item {
             WeatherCard(
-                state = viewModel.state,
-                backgroundColor = AppTheme.colors.cardBackground
+                state = viewModel.state, backgroundColor = AppTheme.colors.cardBackground
             )
         }
         item { WeatherRadar() }
@@ -115,10 +106,7 @@ fun WeatherDetailPageLazyColumn(viewModel: WeatherViewModel) {
         item {
             SearchWidget(
                 modifier = Modifier.padding(
-                    top = 16.dp,
-                    start = 16.dp,
-                    end = 16.dp,
-                    bottom = 70.dp
+                    top = 16.dp, start = 16.dp, end = 16.dp, bottom = 70.dp
                 )
             ) {
                 isVisibleSearchField = !isVisibleSearchField

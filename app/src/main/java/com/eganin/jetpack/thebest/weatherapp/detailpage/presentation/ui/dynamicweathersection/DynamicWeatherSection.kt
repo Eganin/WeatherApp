@@ -38,6 +38,7 @@ fun DynamicWeatherSection(
     info: WeatherData,
     sunsetAndSunriseTimeData: SunsetSunriseTimeData,
     modifier: Modifier? = null,
+    cityName: String,
 ) {
     BoxWithConstraints(
         modifier = modifier ?: Modifier
@@ -47,14 +48,18 @@ fun DynamicWeatherSection(
         DynamicWeatherLandscape(
             info = info,
             constraints = constraints,
-            sunsetAndSunriseTimeData = sunsetAndSunriseTimeData
+            sunsetAndSunriseTimeData = sunsetAndSunriseTimeData,
+            cityName = cityName
         )
     }
 }
 
 @Composable
 fun DynamicWeatherLandscape(
-    info: WeatherData, sunsetAndSunriseTimeData: SunsetSunriseTimeData, constraints: Constraints
+    info: WeatherData,
+    sunsetAndSunriseTimeData: SunsetSunriseTimeData,
+    constraints: Constraints,
+    cityName: String,
 ) {
     var isVisibleThunder by remember { mutableStateOf(false) }
     ConstraintLayout(
@@ -90,7 +95,7 @@ fun DynamicWeatherLandscape(
         val maxXPositionIcon = width.toFloat() / 2f
         val maxYPositionIcon = height.toFloat() / 8f
 
-        val (backgroundLayer1, backgroundLayer2, mountain, particles, clouds, fog, temperature, temperatureUnit, weatherDescription) = createRefs()
+        val (backgroundLayer1, backgroundLayer2, mountain, particles, fog, temperature, temperatureUnit, weatherDescription,cityDescription) = createRefs()
         val (backgroundLayerOneImage, backgroundLayerTwoImage) = when {
             info.time.hour in 6..11 && (sunsetAndSunriseTimeData.sunriseHour - info.time.hour) in -1..2 -> {
                 moonIsVisible = true
@@ -209,7 +214,15 @@ fun DynamicWeatherLandscape(
             style = Typography.h5.copy(shadow = textShadow),
             color = textColor,
             modifier = Modifier.constrainAs(weatherDescription) {
-                top.linkTo(temperature.bottom, margin = 8.dp)
+                top.linkTo(temperature.bottom, margin = 4.dp)
+                start.linkTo(parent.start, margin = 16.dp)
+            })
+
+        Text(text = cityName,
+            style = Typography.h5.copy(shadow = textShadow),
+            color = textColor,
+            modifier = Modifier.constrainAs(cityDescription) {
+                top.linkTo(weatherDescription.bottom, margin = 2.dp)
                 start.linkTo(parent.start, margin = 16.dp)
             })
 
