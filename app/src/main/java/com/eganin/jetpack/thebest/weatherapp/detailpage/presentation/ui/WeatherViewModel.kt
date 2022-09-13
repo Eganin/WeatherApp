@@ -8,11 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.eganin.jetpack.thebest.weatherapp.common.domain.location.LocationTracker
 import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.WeatherRepository
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
-import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData
-import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherInfo
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.GeocodingRepository
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.SunsetSunriseTimeRepository
-import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.sunsetsunrisetime.SunsetSunriseTimeData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -77,29 +74,7 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
-    private fun loadWeatherInfo() {
-        viewModelScope.launch {
-            startLoadingState()
-            locationTracker.getCurrentLocation()?.let { location ->
-                val result = repository.getWeatherData(location.latitude, location.longitude)
-                loadDataUsingResource(
-                    stateSuccess = state.copy(
-                        weatherInfo = result.data,
-                        isLoading = false,
-                        error = null
-                    ),
-                    stateError = state.copy(
-                        weatherInfo = null,
-                        isLoading = false,
-                        error = result.message
-                    ),
-                    result = result
-                )
-            } ?: run {
-                onEvent(event = DetailPageEvent.Error)
-            }
-        }
-    }
+    fun getLastCity()= if (citiesItemList.isNotEmpty()) citiesItemList.last() else ""
 
     private fun <T> loadDataUsingResource(
         stateError: WeatherState,
@@ -108,13 +83,13 @@ class WeatherViewModel @Inject constructor(
         successAction : (() -> Unit)?=null
     ) {
         viewModelScope.launch {
-            when (result) {
+            state = when (result) {
                 is Resource.Success -> {
                     successAction?.invoke()
-                    state = stateSuccess
+                    stateSuccess
                 }
                 is Resource.Error -> {
-                    state = stateError
+                    stateError
                 }
             }
         }
@@ -144,6 +119,30 @@ class WeatherViewModel @Inject constructor(
             }
         }
         providerLocation
+    }
+
+    private fun loadWeatherInfo() {
+        viewModelScope.launch {
+            startLoadingState()
+            locationTracker.getCurrentLocation()?.let { location ->
+                val result = repository.getWeatherData(location.latitude, location.longitude)
+                loadDataUsingResource(
+                    stateSuccess = state.copy(
+                        weatherInfo = result.data,
+                        isLoading = false,
+                        error = null
+                    ),
+                    stateError = state.copy(
+                        weatherInfo = null,
+                        isLoading = false,
+                        error = result.message
+                    ),
+                    result = result
+                )
+            } ?: run {
+                onEvent(event = DetailPageEvent.Error)
+            }
+        }
     }
 
     private fun loadDataStock() {
@@ -197,6 +196,9 @@ class WeatherViewModel @Inject constructor(
                         error = result.message
                     ),
                     successAction = {
+                        if(listSearchQuery.contains(state.searchQuery)){
+                            listSearchQuery.remove(state.searchQuery)
+                        }
                         listSearchQuery.add(state.searchQuery)
                         citiesItemList = listSearchQuery.toList()
                     }

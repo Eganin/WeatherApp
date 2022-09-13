@@ -37,11 +37,11 @@ import kotlinx.coroutines.withContext
 fun DynamicWeatherSection(
     info: WeatherData,
     sunsetAndSunriseTimeData: SunsetSunriseTimeData,
-    modifier: Modifier? = null,
     cityName: String,
+    isSmallSize: Boolean = false
 ) {
     BoxWithConstraints(
-        modifier = modifier ?: Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.4f)
     ) {
@@ -49,7 +49,8 @@ fun DynamicWeatherSection(
             info = info,
             constraints = constraints,
             sunsetAndSunriseTimeData = sunsetAndSunriseTimeData,
-            cityName = cityName
+            cityName = cityName,
+            isSmallSize = isSmallSize
         )
     }
 }
@@ -60,6 +61,7 @@ fun DynamicWeatherLandscape(
     sunsetAndSunriseTimeData: SunsetSunriseTimeData,
     constraints: Constraints,
     cityName: String,
+    isSmallSize: Boolean
 ) {
     var isVisibleThunder by remember { mutableStateOf(false) }
     ConstraintLayout(
@@ -67,7 +69,7 @@ fun DynamicWeatherLandscape(
     ) {
         // while for thunder
         rememberCoroutineScope().launch {
-            withContext(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 while (true) {
                     delay(1000L)
                     withContext(Dispatchers.Main) {
@@ -89,13 +91,13 @@ fun DynamicWeatherLandscape(
         var moonIsVisible = false
 
         val startXPositionIcon = width.toFloat() / 1.2f
-        val startYPositionIcon = height.toFloat() / 4f
+        val startYPositionIcon = if (!isSmallSize) height.toFloat() / 4f else height.toFloat()/14f
         val endXPositionIcon = width.toFloat() / 8f
-        val endYPositionIcon = height.toFloat() / 2.5f
+        val endYPositionIcon = if (!isSmallSize) height.toFloat() / 2.5f else height.toFloat()/12f
         val maxXPositionIcon = width.toFloat() / 2f
-        val maxYPositionIcon = height.toFloat() / 8f
+        val maxYPositionIcon = if (!isSmallSize) height.toFloat() / 8f else height.toFloat()/14f
 
-        val (backgroundLayer1, backgroundLayer2, mountain, particles, fog, temperature, temperatureUnit, weatherDescription,cityDescription) = createRefs()
+        val (backgroundLayer1, backgroundLayer2, mountain, particles, fog, temperature, temperatureUnit, weatherDescription, cityDescription) = createRefs()
         val (backgroundLayerOneImage, backgroundLayerTwoImage) = when {
             info.time.hour in 6..11 && (sunsetAndSunriseTimeData.sunriseHour - info.time.hour) in -1..2 -> {
                 moonIsVisible = true
@@ -137,6 +139,7 @@ fun DynamicWeatherLandscape(
 
             else -> null to null
         }
+
         backgroundLayerOneImage?.let { imageId ->
             Image(
                 painter = painterResource(imageId),
@@ -299,7 +302,7 @@ fun DynamicWeatherLandscape(
             }
             // add rain and snow
             when (weatherState) {
-                WeatherState.HEAVY_RAIN, WeatherState.THUNDERSTORM -> CreateRain(particleCount = 200)
+                WeatherState.HEAVY_RAIN, WeatherState.THUNDERSTORM -> CreateRain(particleCount = 300)
                 WeatherState.RAIN -> CreateRain(particleCount = 100)
                 WeatherState.SNOW -> Particles(parameters = snowParameters,
                     modifier = Modifier.constrainAs(particles) {
@@ -316,7 +319,7 @@ fun DynamicWeatherLandscape(
 }
 
 @Composable
-fun CreateRain(particleCount: Int) {
+private fun CreateRain(particleCount: Int) {
     val scene = remember { SceneRain(particleCount = particleCount) }
     scene.setupScene()
     val frameState = StepFrame {
@@ -326,7 +329,7 @@ fun CreateRain(particleCount: Int) {
 }
 
 @Composable
-fun CreateClouds(particleCount: Int) {
+private fun CreateClouds(particleCount: Int) {
     val scene = remember { SceneCloud(particleCount = particleCount) }
     scene.setupScene()
     val frameState = StepFrame {
@@ -336,7 +339,7 @@ fun CreateClouds(particleCount: Int) {
 }
 
 @Composable
-fun PaintStatusBarColor(color: Color) {
+private fun PaintStatusBarColor(color: Color) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
         // setup status bar

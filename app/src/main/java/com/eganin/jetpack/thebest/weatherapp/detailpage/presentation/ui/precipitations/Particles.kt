@@ -19,33 +19,7 @@ fun Particles(
     BoxWithConstraints(
         modifier = modifier
     ) {
-
-        when (parameters.shape) {
-            is PrecipitationShape.Circle ->
-                GenerateSnow(modifier = Modifier.fillMaxSize(), parameters = parameters)
-        }
-    }
-}
-@Composable
-fun GenerateClouds(modifier: Modifier = Modifier, parameters: PrecipitationsParameters) {
-    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        repeat(parameters.particleCount){index ->
-            if(index % 2 ==0){
-                Image(
-                    modifier = Modifier
-                        .size(50.dp).offset(y=50.dp),
-                    painter = painterResource(id = R.drawable.cloud),
-                    contentDescription = "",
-                )
-            }else{
-                Image(
-                    modifier = Modifier
-                        .size(50.dp),
-                    painter = painterResource(id = R.drawable.cloud),
-                    contentDescription = "",
-                )
-            }
-        }
+        GenerateSnow(modifier = Modifier.fillMaxSize(), parameters = parameters)
     }
 }
 

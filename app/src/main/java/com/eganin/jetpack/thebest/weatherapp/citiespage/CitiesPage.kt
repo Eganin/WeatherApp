@@ -50,7 +50,8 @@ fun CitiesPage(viewModel: WeatherViewModel, citiesViewModel: CitiesViewModel) {
                         DynamicWeatherSection(
                             info = it.first,
                             sunsetAndSunriseTimeData = it.second,
-                            cityName = info[index]
+                            cityName = info[index],
+                            isSmallSize = true
                         )
                     }
                 }

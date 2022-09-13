@@ -51,7 +51,7 @@ fun WeatherDetailPage(viewModel: WeatherViewModel) {
                             DynamicWeatherSection(
                                 info = weatherData,
                                 sunsetAndSunriseTimeData = sunsetAndSunriseTime,
-                                cityName = if (viewModel.citiesItemList.isNotEmpty()) viewModel.citiesItemList.last() else ""
+                                cityName = viewModel.getLastCity()
                             )
                         }
                     }
