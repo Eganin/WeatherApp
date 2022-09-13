@@ -29,4 +29,5 @@
     <string name="hpa_label_weather_data_display">hpa</string>
     <string name="percent_label_weather_data_display">%</string>
     <string name="speed_label_weather_data_display">km/h</string>
+    <string name="error_label_no_data_available">No Data Available</string>
 </resources>
