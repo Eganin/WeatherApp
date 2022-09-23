@@ -1,8 +1,11 @@
 package com.eganin.jetpack.thebest.weatherapp.di
 
 import android.app.Application
+import androidx.room.Room
 import com.eganin.jetpack.thebest.weatherapp.BuildConfig
 import com.eganin.jetpack.thebest.weatherapp.common.data.remote.WeatherApi
+import com.eganin.jetpack.thebest.weatherapp.data.local.WeatherDatabase
+import com.eganin.jetpack.thebest.weatherapp.data.local.WeatherDatabase.Companion.NAME_DATABASE
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.GeocodingApi
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.SunsetSunriseTimeApi
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -82,6 +85,16 @@ object AppModule {
     @Singleton
     fun provideFusedLocationProviderClient(app: Application): FusedLocationProviderClient {
         return LocationServices.getFusedLocationProviderClient(app)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWeatherDatabase(app : Application) : WeatherDatabase{
+        return Room.databaseBuilder(
+            app,
+            WeatherDatabase::class.java,
+            NAME_DATABASE
+        ).build()
     }
 
 }
