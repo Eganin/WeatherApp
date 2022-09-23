@@ -1,5 +1,6 @@
 package com.eganin.jetpack.thebest.weatherapp.common.data.mapper
 
+import android.util.Log
 import com.eganin.jetpack.thebest.weatherapp.common.data.remote.WeatherDataDto
 import com.eganin.jetpack.thebest.weatherapp.common.data.remote.WeatherDto
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData

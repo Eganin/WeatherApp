@@ -1,4 +1,4 @@
-package com.eganin.jetpack.thebest.weatherapp.data.local
+package com.eganin.jetpack.thebest.weatherapp.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
