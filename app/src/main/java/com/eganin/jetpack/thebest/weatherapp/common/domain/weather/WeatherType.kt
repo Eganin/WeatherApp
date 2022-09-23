@@ -1,11 +1,10 @@
 package com.eganin.jetpack.thebest.weatherapp.common.domain.weather
 
-import androidx.annotation.DrawableRes
 import com.eganin.jetpack.thebest.weatherapp.R
 
 sealed class WeatherType(
     val weatherDesc: String,
-    @DrawableRes val iconRes: Int
+    val iconRes: Int
 ) {
     object ClearSky : WeatherType(
         weatherDesc = "Clear sky",

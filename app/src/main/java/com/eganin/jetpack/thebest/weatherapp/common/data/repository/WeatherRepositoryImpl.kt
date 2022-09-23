@@ -9,13 +9,19 @@ import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.getDataFor
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherInfo
+import com.eganin.jetpack.thebest.weatherapp.data.local.WeatherDatabase
+import com.eganin.jetpack.thebest.weatherapp.data.mapper.toWeatherDataDto
+import com.eganin.jetpack.thebest.weatherapp.data.mapper.toWeatherDataEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
-    private val api: WeatherApi
+    private val api: WeatherApi,
+    db: WeatherDatabase
 ) : WeatherRepository {
+
+    private val weatherDataDao = db.weatherDataDao
     override suspend fun getWeatherData(lat: Double, long: Double): Resource<WeatherInfo> {
         return getDataForRepository(
             data = api.getWeather(
@@ -38,11 +44,17 @@ class WeatherRepositoryImpl @Inject constructor(
         lat: Double,
         long: Double
     ): Resource<Map<Int, List<WeatherData>>> {
+
+        val remoteResult = api.getWeather(
+            lat = lat,
+            long = long
+        ).weatherData
+
+        weatherDataDao.clearWeatherData()
+        weatherDataDao.insertWeatherData(weatherData = remoteResult.toWeatherDataEntity())
+
         return getDataForRepository(
-            data = api.getWeather(
-                lat = lat,
-                long = long
-            ).weatherData.toWeatherDataMap()
+            data = weatherDataDao.getWeatherDataInfo().toWeatherDataDto().toWeatherDataMap()
         )
     }
 }

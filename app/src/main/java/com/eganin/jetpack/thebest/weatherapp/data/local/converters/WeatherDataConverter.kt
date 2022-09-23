@@ -1,20 +1,38 @@
 package com.eganin.jetpack.thebest.weatherapp.data.local.converters
 
 import androidx.room.TypeConverter
+import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherType
+import java.lang.Exception
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class WeatherDataConverter {
 
     @TypeConverter
-    fun timeToString(time : LocalDateTime): String {
-        val hour = time.hour
-        val month = time.monthValue
-        return "${time.year}-${if(month <10) "0$month" else month}-${time.dayOfMonth}T${if(hour<10) "0$hour" else hour}:00"
+    fun listStringsToString(time: List<String>): String {
+        return time.joinToString(separator = ",")
     }
 
     @TypeConverter
-    fun stringToTime(time : String) : LocalDateTime{
-        return LocalDateTime.parse(time, DateTimeFormatter.ISO_DATE_TIME)
+    fun stringToListStrings(str: String): List<String> {
+        return str.split(",")
     }
+
+    @TypeConverter
+    fun listDoublesToString(temperatures: List<Double>): String {
+        return temperatures.joinToString(separator = ",")
+    }
+
+    @TypeConverter
+    fun stringToListDoubles(str: String): List<Double> {
+        return str.split(",").map {
+            try {
+                it.toDouble()
+            } catch (e: Exception) {
+                0.0
+            }
+        }
+    }
+
+
 }

@@ -9,6 +9,7 @@ data class WeatherData(
     val windSpeed: Double,
     val humidity: Double,
     val weatherType: WeatherType,
+    val weatherCode : Int,
     val state: WeatherState = when (weatherType.weatherDesc) {
         "Clear sky" -> WeatherState.CLEAR_SKY
         "Mainly clear" -> WeatherState.FEW_CLOUDS
