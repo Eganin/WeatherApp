@@ -15,6 +15,6 @@ interface GeocodingDao {
     @Query("DELETE FROM geocodingentity")
     suspend fun clearGeocodingInfo()
 
-    @Query("SELECT * FROM geocodingentity")
-    suspend fun getGeocodingInfo() : GeocodingEntity
+    @Query("SELECT * FROM geocodingentity WHERE :cityName == cityName LIMIT 1")
+    suspend fun getGeocodingInfo(cityName : String) : GeocodingEntity
 }

@@ -1,6 +1,5 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -75,13 +74,13 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
-    fun getLastCity()= if (citiesItemList.isNotEmpty()) citiesItemList.last() else ""
+    fun getLastCity() = if (citiesItemList.isNotEmpty()) citiesItemList.last() else ""
 
     private fun <T> loadDataUsingResource(
         stateError: WeatherState,
         stateSuccess: WeatherState,
         result: Resource<T>,
-        successAction : (() -> Unit)?=null
+        successAction: (() -> Unit)? = null
     ) {
         viewModelScope.launch {
             state = when (result) {
@@ -103,13 +102,16 @@ class WeatherViewModel @Inject constructor(
         )
     }
 
-    private fun errorLocationState(){
+    private fun errorLocationState() {
         onEvent(event = DetailPageEvent.Error)
     }
 
     private suspend fun getProviderLocation() = withContext(Dispatchers.IO) {
         val providerLocation = if (state.searchQuery.isNotEmpty()) {
-            val answer = geocodingRepository.getGeoFromCity(cityName = state.searchQuery).data
+            val answer = geocodingRepository.getGeoFromCity(
+                cityName = state.searchQuery,
+                fetchFromRemote = true
+            ).data
             answer?.let {
                 Pair(first = answer.latitude, second = answer.longitude)
             }
@@ -150,24 +152,39 @@ class WeatherViewModel @Inject constructor(
         viewModelScope.launch {
             startLoadingState()
 
+            var result: Resource<List<Int>>? = null
             getProviderLocation()?.let { location ->
-                val result =
-                    repository.getDataForStock(location.first, location.second)
+                result =
+                    repository.getDataForStock(
+                        location.first,
+                        location.second,
+                        fetchFromRemote = true
+                    )
+            } ?: run {
+                val fakeData = Pair(first = 0.0, second = 0.0)
+                result =
+                    repository.getDataForStock(
+                        fakeData.first,
+                        fakeData.second,
+                        fetchFromRemote = false
+                    )
+                errorLocationState()
+            }
+
+            result?.let {
                 loadDataUsingResource(
-                    result = result,
+                    result = it,
                     stateSuccess = state.copy(
-                        dataStock = result.data,
+                        dataStock = it.data,
                         isLoading = false,
                         error = null
                     ),
                     stateError = state.copy(
                         dataStock = null,
                         isLoading = false,
-                        error = result.message
+                        error = it.message
                     )
                 )
-            } ?: run {
-                errorLocationState()
             }
         }
     }
@@ -180,7 +197,10 @@ class WeatherViewModel @Inject constructor(
             // load SunsetAndSunrise for dynamic weather section
             loadSunsetAndSunriseTimes()
             // get geocoding from city
-            geocodingRepository.getGeoFromCity(cityName = cityName).data?.let { location ->
+            geocodingRepository.getGeoFromCity(
+                cityName = cityName,
+                fetchFromRemote = true
+            ).data?.let { location ->
                 // get weather info
                 val result =
                     repository.getWeatherData(location.latitude, location.longitude)
@@ -197,7 +217,7 @@ class WeatherViewModel @Inject constructor(
                         error = result.message
                     ),
                     successAction = {
-                        if(listSearchQuery.contains(state.searchQuery)){
+                        if (listSearchQuery.contains(state.searchQuery)) {
                             listSearchQuery.remove(state.searchQuery)
                         }
                         listSearchQuery.add(state.searchQuery)
@@ -217,7 +237,8 @@ class WeatherViewModel @Inject constructor(
             getProviderLocation()?.let { location ->
                 val result = sunsetSunriseTimeRepository.getSunsetSunriseTime(
                     lat = location.first,
-                    lon = location.second
+                    lon = location.second,
+                    fetchFromRemote = true
                 )
                 loadDataUsingResource(
                     result = result,

@@ -16,21 +16,21 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CitiesViewModel  @Inject constructor(
+class CitiesViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository,
     private val geocodingRepository: GeocodingRepository,
     private val sunsetSunriseTimeRepository: SunsetSunriseTimeRepository
-) : ViewModel(){
+) : ViewModel() {
 
     var state by mutableStateOf(CitiesPageState())
         private set
 
-    fun onEvent(event: CitiesPageEvent){
-        when(event){
-            is CitiesPageEvent.LoadData ->{
+    fun onEvent(event: CitiesPageEvent) {
+        when (event) {
+            is CitiesPageEvent.LoadData -> {
                 loadDataForCitiesPage(listSearchQuery = event.info)
             }
-            is CitiesPageEvent.Error ->{
+            is CitiesPageEvent.Error -> {
                 state = state.copy(
                     isLoading = false,
                     error = "Error Loading cities info"
@@ -39,7 +39,7 @@ class CitiesViewModel  @Inject constructor(
         }
     }
 
-    private fun loadDataForCitiesPage(listSearchQuery : List<String>) {
+    private fun loadDataForCitiesPage(listSearchQuery: List<String>) {
         viewModelScope.launch {
             state = state.copy(
                 isLoading = true,
@@ -47,13 +47,17 @@ class CitiesViewModel  @Inject constructor(
             )
             val listInfo: MutableList<Pair<WeatherData, SunsetSunriseTimeData>> = mutableListOf()
             listSearchQuery.forEach { name ->
-                geocodingRepository.getGeoFromCity(cityName = name).data?.let { coordinates ->
+                geocodingRepository.getGeoFromCity(
+                    cityName = name,
+                    fetchFromRemote = true
+                ).data?.let { coordinates ->
                     var weatherData: WeatherData? = null
                     var sunsetSunriseTimeData: SunsetSunriseTimeData? = null
                     when (val result =
                         sunsetSunriseTimeRepository.getSunsetSunriseTime(
                             lat = coordinates.latitude,
-                            lon = coordinates.longitude
+                            lon = coordinates.longitude,
+                            fetchFromRemote = true
                         )) {
 
                         is Resource.Success -> {
@@ -98,7 +102,7 @@ class CitiesViewModel  @Inject constructor(
                     isLoading = false,
                     error = null,
                 )
-            }else{
+            } else {
                 state.copy(
                     info = null,
                     isLoading = false,

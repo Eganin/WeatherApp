@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class GeocodingEntity(
     val latitude: Double,
     val longitude: Double,
+    val cityName : String,
     @PrimaryKey
     val id: Int? = null
 )

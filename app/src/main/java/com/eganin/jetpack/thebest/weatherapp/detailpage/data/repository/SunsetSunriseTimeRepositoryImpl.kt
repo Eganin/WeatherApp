@@ -21,17 +21,19 @@ class SunsetSunriseTimeRepositoryImpl @Inject constructor(
 
     private val sunsetSunriseDao = db.sunsetSunriseDao
     override suspend fun getSunsetSunriseTime(
-        lat: Double, lon: Double
+        lat: Double, lon: Double, fetchFromRemote: Boolean
     ): Resource<SunsetSunriseTimeData> {
-        val remoteSunsetSunriseData = api.getTimesData(
-            lat = lat,
-            long = lon
-        ).results.toSunsetAndSunriseTime()
+        if (fetchFromRemote) {
+            val remoteSunsetSunriseData = api.getTimesData(
+                lat = lat,
+                long = lon
+            ).results.toSunsetAndSunriseTime()
 
-        sunsetSunriseDao.clearSunsetAndSunriseInfo()
-        sunsetSunriseDao.insertSunsetAndSunriseInfo(
-            sunsetSunriseEntity = remoteSunsetSunriseData.toSunsetSunriseTimeDataEntity()
-        )
+            sunsetSunriseDao.clearSunsetAndSunriseInfo()
+            sunsetSunriseDao.insertSunsetAndSunriseInfo(
+                sunsetSunriseEntity = remoteSunsetSunriseData.toSunsetSunriseTimeDataEntity()
+            )
+        }
 
         return getDataForRepository(
             data = sunsetSunriseDao.getSunsetAndSunriseInfo().toSunsetSunriseTimeData()

@@ -58,7 +58,7 @@ class WeekListViewModel @Inject constructor(
 
     private suspend fun getProviderLocation(searchQuery: String) = withContext(Dispatchers.IO) {
         val providerLocation = if (searchQuery.isNotEmpty()) {
-            val answer = geocodingRepository.getGeoFromCity(cityName = searchQuery).data
+            val answer = geocodingRepository.getGeoFromCity(cityName = searchQuery, fetchFromRemote = true).data
             answer?.let {
                 Pair(first = answer.latitude, second = answer.longitude)
             }
@@ -80,7 +80,7 @@ class WeekListViewModel @Inject constructor(
 
             getProviderLocation(searchQuery = searchQuery)?.let { location ->
                 val result = repository.getDataForEveryDay(
-                    lat = location.first, long = location.second
+                    lat = location.first, long = location.second, fetchFromRemote = true
                 )
                 loadDataUsingResource(
                     result = result, stateSuccess = state.copy(

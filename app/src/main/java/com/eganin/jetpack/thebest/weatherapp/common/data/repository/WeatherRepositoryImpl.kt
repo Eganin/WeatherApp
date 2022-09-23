@@ -33,16 +33,22 @@ class WeatherRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getDataForStock(lat: Double, long: Double): Resource<List<Int>> {
+    override suspend fun getDataForStock(
+        lat: Double,
+        long: Double,
+        fetchFromRemote: Boolean
+    ): Resource<List<Int>> {
 
-        val remoteData = api.getWeather(
-            lat = lat,
-            long = long
-        ).toWeatherInfo().weatherDataPerDay[0]?.toAverageValues()
+        if(fetchFromRemote){
+            val remoteData = api.getWeather(
+                lat = lat,
+                long = long
+            ).toWeatherInfo().weatherDataPerDay[0]?.toAverageValues()
 
-        remoteData?.let {
-            dataForStockDao.clearDataForStockEntity()
-            dataForStockDao.insertDataForStock(dataForStockEntity = DataForStockEntity(data = it))
+            remoteData?.let {
+                dataForStockDao.clearDataForStockEntity()
+                dataForStockDao.insertDataForStock(dataForStockEntity = DataForStockEntity(data = it))
+            }
         }
 
         return getDataForRepository(
@@ -52,16 +58,19 @@ class WeatherRepositoryImpl @Inject constructor(
 
     override suspend fun getDataForEveryDay(
         lat: Double,
-        long: Double
+        long: Double,
+        fetchFromRemote: Boolean
     ): Resource<Map<Int, List<WeatherData>>> {
 
-        val remoteResult = api.getWeather(
-            lat = lat,
-            long = long
-        ).weatherData
+        if(fetchFromRemote){
+            val remoteResult = api.getWeather(
+                lat = lat,
+                long = long
+            ).weatherData
 
-        weatherDataDao.clearWeatherData()
-        weatherDataDao.insertWeatherData(weatherData = remoteResult.toWeatherDataEntity())
+            weatherDataDao.clearWeatherData()
+            weatherDataDao.insertWeatherData(weatherData = remoteResult.toWeatherDataEntity())
+        }
 
         return getDataForRepository(
             data = weatherDataDao.getWeatherDataInfo().toWeatherDataDto().toWeatherDataMap()

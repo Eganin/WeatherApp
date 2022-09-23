@@ -18,15 +18,19 @@ class GeocodingRepositoryImpl @Inject constructor(
 ) : GeocodingRepository {
 
     val geocodingDao = db.geocodingDao
-    override suspend fun getGeoFromCity(cityName: String): Resource<GeocodingDto> {
+    override suspend fun getGeoFromCity(
+        cityName: String,
+        fetchFromRemote: Boolean
+    ): Resource<GeocodingDto> {
 
-        val remoteInfo = geocodingApi.getCoordFromCity(cityName = cityName).get(index = 0)
-
-        geocodingDao.clearGeocodingInfo()
-        geocodingDao.insertGeocodingInfo(geocodingInfo = remoteInfo.toGeocodingEntity())
+        if (fetchFromRemote) {
+            val remoteInfo = geocodingApi.getCoordFromCity(cityName = cityName).get(index = 0)
+            //geocodingDao.clearGeocodingInfo()
+            geocodingDao.insertGeocodingInfo(geocodingInfo = remoteInfo.toGeocodingEntity(cityName = cityName))
+        }
 
         return getDataForRepository(
-            data = geocodingDao.getGeocodingInfo().toGeocodingDto()
+            data = geocodingDao.getGeocodingInfo(cityName = cityName).toGeocodingDto()
         )
     }
 }

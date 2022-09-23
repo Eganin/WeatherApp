@@ -4,5 +4,5 @@ import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.sunsetsunrisetime.SunsetSunriseTimeData
 
 interface SunsetSunriseTimeRepository {
-    suspend fun getSunsetSunriseTime(lat : Double, lon : Double) : Resource<SunsetSunriseTimeData>
+    suspend fun getSunsetSunriseTime(lat : Double, lon : Double,fetchFromRemote : Boolean) : Resource<SunsetSunriseTimeData>
 }
