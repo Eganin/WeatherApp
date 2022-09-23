@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class DataForStockEntity(
-    val data : List<Int> = emptyList(),
+    val data : List<Int>,
     @PrimaryKey
     val id : Int? = null
 )

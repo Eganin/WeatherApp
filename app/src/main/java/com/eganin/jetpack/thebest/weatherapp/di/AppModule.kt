@@ -89,12 +89,12 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideWeatherDatabase(app : Application) : WeatherDatabase{
+    fun provideWeatherDatabase(app: Application): WeatherDatabase {
         return Room.databaseBuilder(
             app,
             WeatherDatabase::class.java,
             NAME_DATABASE
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
 }

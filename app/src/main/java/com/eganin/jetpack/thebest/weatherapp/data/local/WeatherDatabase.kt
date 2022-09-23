@@ -10,7 +10,7 @@ import com.eganin.jetpack.thebest.weatherapp.data.local.entities.*
 @Database(
     entities = [
         GeocodingEntity::class,
-        //SunsetSunriseTimeDataEntity::class,
+        SunsetSunriseTimeDataEntity::class,
         DataForStockEntity::class,
         WeatherDataEntity::class,
         //WeatherInfoEntity::class
@@ -22,6 +22,8 @@ abstract class WeatherDatabase : RoomDatabase() {
 
     abstract val geocodingDao : GeocodingDao
     abstract val weatherDataDao : WeatherDataDao
+    abstract val sunsetSunriseDao : SunsetSunriseTimeDataDao
+    abstract val dataForStockDao : DataForStockDao
     companion object {
         const val NAME_DATABASE = "weather.db"
     }
