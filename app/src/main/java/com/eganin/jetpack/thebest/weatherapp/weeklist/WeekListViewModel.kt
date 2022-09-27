@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.eganin.jetpack.thebest.weatherapp.common.domain.location.LocationTracker
 import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.WeatherRepository
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
+import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.GeocodingRepository
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,6 +25,8 @@ class WeekListViewModel @Inject constructor(
 ) : ViewModel() {
     var state by mutableStateOf(WeekListState())
         private set
+
+    private val fakeData = Pair(first = 0.0, second = 0.0)
 
     fun onEvent(event: WeekListEvent) {
         when (event) {
@@ -58,7 +61,10 @@ class WeekListViewModel @Inject constructor(
 
     private suspend fun getProviderLocation(searchQuery: String) = withContext(Dispatchers.IO) {
         val providerLocation = if (searchQuery.isNotEmpty()) {
-            val answer = geocodingRepository.getGeoFromCity(cityName = searchQuery, fetchFromRemote = true).data
+            val answer = geocodingRepository.getGeoFromCity(
+                cityName = searchQuery,
+                fetchFromRemote = true
+            ).data
             answer?.let {
                 Pair(first = answer.latitude, second = answer.longitude)
             }
@@ -78,13 +84,24 @@ class WeekListViewModel @Inject constructor(
                 error = null,
             )
 
+            var result: Resource<Map<Int, List<WeatherData>>>? = null
+
             getProviderLocation(searchQuery = searchQuery)?.let { location ->
-                val result = repository.getDataForEveryDay(
+                result = repository.getDataForEveryDay(
                     lat = location.first, long = location.second, fetchFromRemote = true
                 )
+
+            } ?: run {
+                result = repository.getDataForEveryDay(
+                    lat = fakeData.first, long = fakeData.second, fetchFromRemote = false
+                )
+                onEvent(event = WeekListEvent.Error)
+            }
+
+            result?.let {
                 loadDataUsingResource(
-                    result = result, stateSuccess = state.copy(
-                        info = result.data?.map {
+                    result = it, stateSuccess = state.copy(
+                        info = it.data?.map {
                             it.value.maxBy { it.temperatureCelsius }
                         },
                         isLoading = false,
@@ -92,12 +109,9 @@ class WeekListViewModel @Inject constructor(
                     ), stateError = state.copy(
                         info = null,
                         isLoading = false,
-                        error = result.message
+                        error = it.message
                     )
                 )
-
-            } ?: run {
-                onEvent(event = WeekListEvent.Error)
             }
         }
     }

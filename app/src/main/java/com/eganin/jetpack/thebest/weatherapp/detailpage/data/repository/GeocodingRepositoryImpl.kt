@@ -17,7 +17,7 @@ class GeocodingRepositoryImpl @Inject constructor(
     db: WeatherDatabase
 ) : GeocodingRepository {
 
-    val geocodingDao = db.geocodingDao
+    private val geocodingDao = db.geocodingDao
     override suspend fun getGeoFromCity(
         cityName: String,
         fetchFromRemote: Boolean
@@ -25,7 +25,6 @@ class GeocodingRepositoryImpl @Inject constructor(
 
         if (fetchFromRemote) {
             val remoteInfo = geocodingApi.getCoordFromCity(cityName = cityName).get(index = 0)
-            //geocodingDao.clearGeocodingInfo()
             geocodingDao.insertGeocodingInfo(geocodingInfo = remoteInfo.toGeocodingEntity(cityName = cityName))
         }
 

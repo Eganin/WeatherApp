@@ -25,6 +25,8 @@ class CitiesViewModel @Inject constructor(
     var state by mutableStateOf(CitiesPageState())
         private set
 
+    private val fakeData = Pair(first = 0.0, second = 0.0)
+
     fun onEvent(event: CitiesPageEvent) {
         when (event) {
             is CitiesPageEvent.LoadData -> {

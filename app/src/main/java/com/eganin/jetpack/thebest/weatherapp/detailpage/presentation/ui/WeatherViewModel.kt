@@ -8,8 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.eganin.jetpack.thebest.weatherapp.common.domain.location.LocationTracker
 import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.WeatherRepository
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
+import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherInfo
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.GeocodingRepository
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.SunsetSunriseTimeRepository
+import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.sunsetsunrisetime.SunsetSunriseTimeData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -31,6 +33,8 @@ class WeatherViewModel @Inject constructor(
 
     private val listSearchQuery = mutableSetOf<String>()
 
+    private val fakeData = Pair(first = 0.0, second = 0.0)
+
     fun onEvent(event: DetailPageEvent) {
         when (event) {
             is DetailPageEvent.Refresh -> {
@@ -47,7 +51,7 @@ class WeatherViewModel @Inject constructor(
                 state = state.copy(searchQuery = event.query)
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
-                    delay(1500L)
+                    delay(2000L)
                     loadGeocoding(cityName = state.searchQuery)
                 }
             }
@@ -127,27 +131,36 @@ class WeatherViewModel @Inject constructor(
     private fun loadWeatherInfo() {
         viewModelScope.launch {
             startLoadingState()
+            var result: Resource<WeatherInfo>? = null
             locationTracker.getCurrentLocation()?.let { location ->
-                val result = repository.getWeatherData(
+                result = repository.getWeatherData(
                     location.latitude,
                     location.longitude,
                     fetchFromRemote = true
                 )
+
+            } ?: run {
+                result = repository.getWeatherData(
+                    fakeData.first,
+                    fakeData.second,
+                    fetchFromRemote = false
+                )
+                errorLocationState()
+            }
+            result?.let {
                 loadDataUsingResource(
                     stateSuccess = state.copy(
-                        weatherInfo = result.data,
+                        weatherInfo = it.data,
                         isLoading = false,
                         error = null
                     ),
                     stateError = state.copy(
                         weatherInfo = null,
                         isLoading = false,
-                        error = result.message
+                        error = it.message
                     ),
-                    result = result
+                    result = it
                 )
-            } ?: run {
-                onEvent(event = DetailPageEvent.Error)
             }
         }
     }
@@ -165,7 +178,6 @@ class WeatherViewModel @Inject constructor(
                         fetchFromRemote = true
                     )
             } ?: run {
-                val fakeData = Pair(first = 0.0, second = 0.0)
                 result =
                     repository.getDataForStock(
                         fakeData.first,
@@ -242,27 +254,36 @@ class WeatherViewModel @Inject constructor(
         viewModelScope.launch {
             startLoadingState()
 
+            var result : Resource<SunsetSunriseTimeData>?=null
             getProviderLocation()?.let { location ->
-                val result = sunsetSunriseTimeRepository.getSunsetSunriseTime(
+                result = sunsetSunriseTimeRepository.getSunsetSunriseTime(
                     lat = location.first,
                     lon = location.second,
                     fetchFromRemote = true
                 )
+
+            } ?: run {
+                result = sunsetSunriseTimeRepository.getSunsetSunriseTime(
+                    lat = fakeData.first,
+                    lon = fakeData.second,
+                    fetchFromRemote = false
+                )
+                errorLocationState()
+            }
+            result?.let {
                 loadDataUsingResource(
-                    result = result,
+                    result = it,
                     stateSuccess = state.copy(
-                        sunsetAndSunriseTime = result.data,
+                        sunsetAndSunriseTime = it.data,
                         isLoading = false,
                         error = null
                     ),
                     stateError = state.copy(
                         sunsetAndSunriseTime = null,
                         isLoading = false,
-                        error = result.message
+                        error = it.message
                     )
                 )
-            } ?: run {
-                errorLocationState()
             }
         }
     }

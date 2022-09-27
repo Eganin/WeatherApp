@@ -1,6 +1,5 @@
 package com.eganin.jetpack.thebest.weatherapp.common.data.repository
 
-import android.util.Log
 import com.eganin.jetpack.thebest.weatherapp.common.data.local.WeatherDatabase
 import com.eganin.jetpack.thebest.weatherapp.common.data.local.entities.DataForStockEntity
 import com.eganin.jetpack.thebest.weatherapp.common.data.mapper.*
