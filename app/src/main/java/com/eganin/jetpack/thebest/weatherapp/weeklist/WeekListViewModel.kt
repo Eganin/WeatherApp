@@ -9,7 +9,9 @@ import com.eganin.jetpack.thebest.weatherapp.common.domain.location.LocationTrac
 import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.WeatherRepository
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData
+import com.eganin.jetpack.thebest.weatherapp.common.presentation.getProviderLocation
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.GeocodingRepository
+import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.DetailPageEvent
 import com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.WeatherState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -42,77 +44,73 @@ class WeekListViewModel @Inject constructor(
         }
     }
 
-    private fun <T> loadDataUsingResource(
-        stateError: WeekListState,
-        stateSuccess: WeekListState,
-        result: Resource<T>,
-    ) {
-        viewModelScope.launch {
-            state = when (result) {
-                is Resource.Success -> {
-                    stateSuccess
-                }
-                is Resource.Error -> {
-                    stateError
-                }
-            }
-        }
-    }
-
-    private suspend fun getProviderLocation(searchQuery: String) = withContext(Dispatchers.IO) {
-        val providerLocation = if (searchQuery.isNotEmpty()) {
-            val answer = geocodingRepository.getGeoFromCity(
-                cityName = searchQuery,
-                fetchFromRemote = true
-            ).data
-            answer?.let {
-                Pair(first = answer.latitude, second = answer.longitude)
-            }
-        } else {
-            val answer = locationTracker.getCurrentLocation()
-            answer?.let {
-                Pair(first = answer.latitude, second = answer.longitude)
-            }
-        }
-        providerLocation
-    }
-
     private fun loadWeatherDataForEveryDay(searchQuery: String = "") {
         viewModelScope.launch {
-            state = state.copy(
-                isLoading = true,
-                error = null,
-            )
+            startLoadingState()
 
-            var result: Resource<Map<Int, List<WeatherData>>>? = null
+            val (data, fetchFromRemote) = provideDataForRepository(searchQuery = searchQuery)
 
-            getProviderLocation(searchQuery = searchQuery)?.let { location ->
-                result = repository.getDataForEveryDay(
-                    lat = location.first, long = location.second, fetchFromRemote = true
-                )
-
-            } ?: run {
-                result = repository.getDataForEveryDay(
-                    lat = fakeData.first, long = fakeData.second, fetchFromRemote = false
-                )
-                onEvent(event = WeekListEvent.Error)
-            }
-
-            result?.let {
-                loadDataUsingResource(
-                    result = it, stateSuccess = state.copy(
-                        info = it.data?.map {
+            repository.getDataForEveryDay(
+                lat = data.first, long = data.second, fetchFromRemote = fetchFromRemote
+            ).collect { result ->
+                wrapperForHandlerResource(result = result) {
+                    state = state.copy(
+                        info = it.map {
                             it.value.maxBy { it.temperatureCelsius }
                         },
                         isLoading = false,
                         error = null
-                    ), stateError = state.copy(
-                        info = null,
-                        isLoading = false,
-                        error = it.message
                     )
-                )
+                }
             }
+        }
+    }
+
+    private fun <T> wrapperForHandlerResource(
+        result: Resource<T>,
+        onStateChangeSuccess: (T) -> Unit
+    ) {
+        when (result) {
+            is Resource.Success -> {
+                result.data?.let {
+                    onStateChangeSuccess(it)
+                }
+            }
+
+            is Resource.Error -> {
+                errorLocationState()
+            }
+
+            is Resource.Loading -> {
+                state = state.copy(isLoading = true)
+            }
+        }
+    }
+
+    private fun startLoadingState() {
+        state = state.copy(
+            isLoading = true,
+            error = null,
+        )
+    }
+
+    private fun errorLocationState() {
+        onEvent(event = WeekListEvent.Error)
+    }
+
+    private suspend fun provideDataForRepository(searchQuery: String): Pair<Pair<Double, Double>, Boolean> {
+        getProviderLocation(
+            searchQuery = searchQuery,
+            geocodingRepository = geocodingRepository,
+            locationTracker = locationTracker
+        )?.let { location ->
+            return Pair(
+                first = Pair(first = location.first, second = location.second),
+                second = true
+            )
+        } ?: run {
+            errorLocationState()
+            return Pair(first = fakeData, second = false)
         }
     }
 }

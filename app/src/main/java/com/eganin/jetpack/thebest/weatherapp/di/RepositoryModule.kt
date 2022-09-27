@@ -2,8 +2,8 @@ package com.eganin.jetpack.thebest.weatherapp.di
 
 import com.eganin.jetpack.thebest.weatherapp.common.data.repository.WeatherRepositoryImpl
 import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.WeatherRepository
-import com.eganin.jetpack.thebest.weatherapp.detailpage.data.repository.GeocodingRepositoryImpl
-import com.eganin.jetpack.thebest.weatherapp.detailpage.data.repository.SunsetSunriseTimeRepositoryImpl
+import com.eganin.jetpack.thebest.weatherapp.common.data.repository.GeocodingRepositoryImpl
+import com.eganin.jetpack.thebest.weatherapp.common.data.repository.SunsetSunriseTimeRepositoryImpl
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.GeocodingRepository
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.SunsetSunriseTimeRepository
 import dagger.Binds

@@ -8,10 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.WeatherRepository
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData
+import com.eganin.jetpack.thebest.weatherapp.common.presentation.getProviderLocation
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.GeocodingRepository
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.SunsetSunriseTimeRepository
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.sunsetsunrisetime.SunsetSunriseTimeData
+import com.eganin.jetpack.thebest.weatherapp.weeklist.WeekListEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,8 +27,6 @@ class CitiesViewModel @Inject constructor(
 
     var state by mutableStateOf(CitiesPageState())
         private set
-
-    private val fakeData = Pair(first = 0.0, second = 0.0)
 
     fun onEvent(event: CitiesPageEvent) {
         when (event) {
@@ -43,60 +44,47 @@ class CitiesViewModel @Inject constructor(
 
     private fun loadDataForCitiesPage(listSearchQuery: List<String>) {
         viewModelScope.launch {
-            state = state.copy(
-                isLoading = true,
-                error = null,
-            )
+            startLoadingState()
+
             val listInfo: MutableList<Pair<WeatherData, SunsetSunriseTimeData>> = mutableListOf()
+            var weatherData: WeatherData? = null
+            var sunsetSunrise: SunsetSunriseTimeData? = null
+
             listSearchQuery.forEach { name ->
                 geocodingRepository.getGeoFromCity(
                     cityName = name,
                     fetchFromRemote = true
-                ).data?.let { coordinates ->
-                    var weatherData: WeatherData? = null
-                    var sunsetSunriseTimeData: SunsetSunriseTimeData? = null
-                    when (val result =
+                ).collect { geocodingDto ->
+                    wrapperForHandlerResource(result = geocodingDto) { coordinates ->
                         sunsetSunriseTimeRepository.getSunsetSunriseTime(
                             lat = coordinates.latitude,
                             lon = coordinates.longitude,
                             fetchFromRemote = true
-                        )) {
-
-                        is Resource.Success -> {
-                            sunsetSunriseTimeData = result.data
+                        ).collect { sunsetSunriseTimeData ->
+                            wrapperForHandlerResource(result = sunsetSunriseTimeData) {
+                                sunsetSunrise = it
+                            }
                         }
-                        is Resource.Error -> {
-                            state = state.copy(
-                                isLoading = false,
-                                error = result.message
-                            )
-                        }
-                    }
 
-                    when (val result =
                         weatherRepository.getWeatherData(
                             coordinates.latitude,
                             coordinates.longitude,
                             fetchFromRemote = true
-                        )) {
-                        is Resource.Success -> {
-                            result.data?.currentWeatherData?.let {
-                                weatherData = it
+                        ).collect { weatherInfo ->
+                            wrapperForHandlerResource(result = weatherInfo) {
+                                it.currentWeatherData?.let {
+                                    weatherData = it
+                                }
                             }
                         }
-                        is Resource.Error -> {
-                            state = state.copy(
-                                isLoading = false,
-                                error = result.message
-                            )
+
+                        weatherData?.let { data ->
+                            sunsetSunrise?.let { sunsetAndSunrise ->
+                                listInfo.add(Pair(first = data, second = sunsetAndSunrise))
+                            }
                         }
                     }
 
-                    weatherData?.let { data ->
-                        sunsetSunriseTimeData?.let { sunsetAndSunrise ->
-                            listInfo.add(Pair(first = data, second = sunsetAndSunrise))
-                        }
-                    }
                 }
             }
             state = if (listInfo.isNotEmpty()) {
@@ -113,5 +101,37 @@ class CitiesViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private suspend fun <T> wrapperForHandlerResource(
+        result: Resource<T>,
+        onStateChangeSuccess: suspend (T) -> Unit
+    ) {
+        when (result) {
+            is Resource.Success -> {
+                result.data?.let {
+                    onStateChangeSuccess(it)
+                }
+            }
+
+            is Resource.Error -> {
+                errorLocationState()
+            }
+
+            is Resource.Loading -> {
+                state = state.copy(isLoading = true)
+            }
+        }
+    }
+
+    private fun startLoadingState() {
+        state = state.copy(
+            isLoading = true,
+            error = null,
+        )
+    }
+
+    private fun errorLocationState() {
+        onEvent(event = CitiesPageEvent.Error)
     }
 }
