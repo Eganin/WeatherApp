@@ -128,7 +128,11 @@ class WeatherViewModel @Inject constructor(
         viewModelScope.launch {
             startLoadingState()
             locationTracker.getCurrentLocation()?.let { location ->
-                val result = repository.getWeatherData(location.latitude, location.longitude)
+                val result = repository.getWeatherData(
+                    location.latitude,
+                    location.longitude,
+                    fetchFromRemote = true
+                )
                 loadDataUsingResource(
                     stateSuccess = state.copy(
                         weatherInfo = result.data,
@@ -203,7 +207,11 @@ class WeatherViewModel @Inject constructor(
             ).data?.let { location ->
                 // get weather info
                 val result =
-                    repository.getWeatherData(location.latitude, location.longitude)
+                    repository.getWeatherData(
+                        location.latitude,
+                        location.longitude,
+                        fetchFromRemote = true
+                    )
                 loadDataUsingResource(
                     result = result,
                     stateSuccess = state.copy(

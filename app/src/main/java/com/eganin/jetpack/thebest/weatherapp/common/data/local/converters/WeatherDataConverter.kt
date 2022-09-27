@@ -1,4 +1,4 @@
-package com.eganin.jetpack.thebest.weatherapp.data.local.converters
+package com.eganin.jetpack.thebest.weatherapp.common.data.local.converters
 
 import androidx.room.TypeConverter
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherType

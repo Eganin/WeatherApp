@@ -1,10 +1,10 @@
-package com.eganin.jetpack.thebest.weatherapp.data.local
+package com.eganin.jetpack.thebest.weatherapp.common.data.local
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.eganin.jetpack.thebest.weatherapp.data.local.entities.SunsetSunriseTimeDataEntity
+import com.eganin.jetpack.thebest.weatherapp.common.data.local.entities.SunsetSunriseTimeDataEntity
 
 @Dao
 interface SunsetSunriseTimeDataDao {
@@ -16,5 +16,5 @@ interface SunsetSunriseTimeDataDao {
     suspend fun clearSunsetAndSunriseInfo()
 
     @Query("SELECT * FROM sunsetsunrisetimedataentity")
-    suspend fun getSunsetAndSunriseInfo() :SunsetSunriseTimeDataEntity
+    suspend fun getSunsetAndSunriseInfo() : SunsetSunriseTimeDataEntity
 }

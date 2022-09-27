@@ -1,7 +1,7 @@
-package com.eganin.jetpack.thebest.weatherapp.data.mapper
+package com.eganin.jetpack.thebest.weatherapp.common.data.mapper
 
 import com.eganin.jetpack.thebest.weatherapp.common.data.remote.WeatherDataDto
-import com.eganin.jetpack.thebest.weatherapp.data.local.entities.WeatherDataEntity
+import com.eganin.jetpack.thebest.weatherapp.common.data.local.entities.WeatherDataEntity
 
 fun WeatherDataDto.toWeatherDataEntity(): WeatherDataEntity {
     return WeatherDataEntity(

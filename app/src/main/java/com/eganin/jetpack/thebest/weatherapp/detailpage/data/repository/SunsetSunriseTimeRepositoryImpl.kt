@@ -2,9 +2,9 @@ package com.eganin.jetpack.thebest.weatherapp.detailpage.data.repository
 
 import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.getDataForRepository
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
-import com.eganin.jetpack.thebest.weatherapp.data.local.WeatherDatabase
-import com.eganin.jetpack.thebest.weatherapp.data.mapper.toSunsetSunriseTimeData
-import com.eganin.jetpack.thebest.weatherapp.data.mapper.toSunsetSunriseTimeDataEntity
+import com.eganin.jetpack.thebest.weatherapp.common.data.local.WeatherDatabase
+import com.eganin.jetpack.thebest.weatherapp.common.data.mapper.toSunsetSunriseTimeData
+import com.eganin.jetpack.thebest.weatherapp.common.data.mapper.toSunsetSunriseTimeDataEntity
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.mapper.toSunsetAndSunriseTime
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.SunsetSunriseTimeApi
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.SunsetSunriseTimeRepository

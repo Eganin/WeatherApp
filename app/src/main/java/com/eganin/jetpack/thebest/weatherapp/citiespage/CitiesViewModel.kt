@@ -74,7 +74,8 @@ class CitiesViewModel @Inject constructor(
                     when (val result =
                         weatherRepository.getWeatherData(
                             coordinates.latitude,
-                            coordinates.longitude
+                            coordinates.longitude,
+                            fetchFromRemote = true
                         )) {
                         is Resource.Success -> {
                             result.data?.currentWeatherData?.let {

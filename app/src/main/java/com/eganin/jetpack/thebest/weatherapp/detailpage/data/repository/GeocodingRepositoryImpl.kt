@@ -2,9 +2,9 @@ package com.eganin.jetpack.thebest.weatherapp.detailpage.data.repository
 
 import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.getDataForRepository
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
-import com.eganin.jetpack.thebest.weatherapp.data.local.WeatherDatabase
-import com.eganin.jetpack.thebest.weatherapp.data.mapper.toGeocodingDto
-import com.eganin.jetpack.thebest.weatherapp.data.mapper.toGeocodingEntity
+import com.eganin.jetpack.thebest.weatherapp.common.data.local.WeatherDatabase
+import com.eganin.jetpack.thebest.weatherapp.common.data.mapper.toGeocodingDto
+import com.eganin.jetpack.thebest.weatherapp.common.data.mapper.toGeocodingEntity
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.GeocodingApi
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.GeocodingDto
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.GeocodingRepository

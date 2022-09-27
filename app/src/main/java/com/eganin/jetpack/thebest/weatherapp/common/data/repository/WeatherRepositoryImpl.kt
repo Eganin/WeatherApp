@@ -1,20 +1,15 @@
 package com.eganin.jetpack.thebest.weatherapp.common.data.repository
 
-import com.eganin.jetpack.thebest.weatherapp.common.data.mapper.toAverageValues
-import com.eganin.jetpack.thebest.weatherapp.common.data.mapper.toWeatherDataMap
+import android.util.Log
+import com.eganin.jetpack.thebest.weatherapp.common.data.local.WeatherDatabase
+import com.eganin.jetpack.thebest.weatherapp.common.data.local.entities.DataForStockEntity
+import com.eganin.jetpack.thebest.weatherapp.common.data.mapper.*
 import com.eganin.jetpack.thebest.weatherapp.common.data.remote.WeatherApi
-import com.eganin.jetpack.thebest.weatherapp.common.data.mapper.toWeatherInfo
 import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.WeatherRepository
 import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.getDataForRepository
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherInfo
-import com.eganin.jetpack.thebest.weatherapp.data.local.WeatherDatabase
-import com.eganin.jetpack.thebest.weatherapp.data.local.entities.DataForStockEntity
-import com.eganin.jetpack.thebest.weatherapp.data.mapper.toWeatherDataDto
-import com.eganin.jetpack.thebest.weatherapp.data.mapper.toWeatherDataEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
@@ -24,12 +19,27 @@ class WeatherRepositoryImpl @Inject constructor(
 
     private val weatherDataDao = db.weatherDataDao
     private val dataForStockDao = db.dataForStockDao
-    override suspend fun getWeatherData(lat: Double, long: Double): Resource<WeatherInfo> {
-        return getDataForRepository(
-            data = api.getWeather(
+    private val weatherInfoDao = db.weatherInfoDao
+
+    override suspend fun getWeatherData(
+        lat: Double,
+        long: Double,
+        fetchFromRemote: Boolean
+    ): Resource<WeatherInfo> {
+        if (fetchFromRemote) {
+            val remoteData = api.getWeather(
                 lat = lat,
                 long = long
             ).toWeatherInfo()
+
+            weatherInfoDao.clearWeatherInfo()
+            weatherInfoDao.insertWeatherInfo(
+                weatherInfoEntity = remoteData.toWeatherInfoEntity()
+            )
+        }
+
+        return getDataForRepository(
+            data = weatherInfoDao.getWeatherInfo().toWeatherInfo()
         )
     }
 
@@ -39,7 +49,7 @@ class WeatherRepositoryImpl @Inject constructor(
         fetchFromRemote: Boolean
     ): Resource<List<Int>> {
 
-        if(fetchFromRemote){
+        if (fetchFromRemote) {
             val remoteData = api.getWeather(
                 lat = lat,
                 long = long
@@ -62,7 +72,7 @@ class WeatherRepositoryImpl @Inject constructor(
         fetchFromRemote: Boolean
     ): Resource<Map<Int, List<WeatherData>>> {
 
-        if(fetchFromRemote){
+        if (fetchFromRemote) {
             val remoteResult = api.getWeather(
                 lat = lat,
                 long = long

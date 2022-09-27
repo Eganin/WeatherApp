@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.room.Room
 import com.eganin.jetpack.thebest.weatherapp.BuildConfig
 import com.eganin.jetpack.thebest.weatherapp.common.data.remote.WeatherApi
-import com.eganin.jetpack.thebest.weatherapp.data.local.WeatherDatabase
-import com.eganin.jetpack.thebest.weatherapp.data.local.WeatherDatabase.Companion.NAME_DATABASE
+import com.eganin.jetpack.thebest.weatherapp.common.data.local.WeatherDatabase
+import com.eganin.jetpack.thebest.weatherapp.common.data.local.WeatherDatabase.Companion.NAME_DATABASE
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.GeocodingApi
 import com.eganin.jetpack.thebest.weatherapp.detailpage.data.remote.SunsetSunriseTimeApi
 import com.google.android.gms.location.FusedLocationProviderClient

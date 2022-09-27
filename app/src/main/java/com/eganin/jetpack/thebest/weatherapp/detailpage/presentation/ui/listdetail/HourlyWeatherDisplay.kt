@@ -1,5 +1,6 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui.listdetail
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,21 +22,25 @@ fun HourlyWeatherDisplay(
     weatherData: WeatherData,
     modifier: Modifier = Modifier,
 ) {
+
     val formattedTime = remember(weatherData) {
         weatherData.time.format(
             DateTimeFormatter.ofPattern("HH")
         )
     }
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
+
         Text(
             text = if(formattedTime.toInt() in 0..12) "$formattedTime AM" else "$formattedTime PM",
             color = AppTheme.colors.secondaryText,
             style = Typography.h6
         )
+
         Image(
             painter = painterResource(id = weatherData.weatherType.iconRes),
             contentDescription = null,
