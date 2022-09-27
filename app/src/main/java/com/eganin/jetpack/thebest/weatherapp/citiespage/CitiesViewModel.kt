@@ -8,25 +8,22 @@ import androidx.lifecycle.viewModelScope
 import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.WeatherRepository
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData
-import com.eganin.jetpack.thebest.weatherapp.common.presentation.getProviderLocation
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.GeocodingRepository
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.SunsetSunriseTimeRepository
 import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.sunsetsunrisetime.SunsetSunriseTimeData
-import com.eganin.jetpack.thebest.weatherapp.weeklist.WeekListEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CitiesViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository,
-    private val geocodingRepository: GeocodingRepository,
-    private val sunsetSunriseTimeRepository: SunsetSunriseTimeRepository
 ) : ViewModel() {
 
     var state by mutableStateOf(CitiesPageState())
         private set
+
+    private var firstLaunch = true
 
     fun onEvent(event: CitiesPageEvent) {
         when (event) {
@@ -46,46 +43,48 @@ class CitiesViewModel @Inject constructor(
         viewModelScope.launch {
             startLoadingState()
 
-            val listInfo: MutableList<Pair<WeatherData, SunsetSunriseTimeData>> = mutableListOf()
-            var weatherData: WeatherData? = null
-            var sunsetSunrise: SunsetSunriseTimeData? = null
-
-            listSearchQuery.forEach { name ->
-                geocodingRepository.getGeoFromCity(
-                    cityName = name,
-                    fetchFromRemote = true
-                ).collect { geocodingDto ->
-                    wrapperForHandlerResource(result = geocodingDto) { coordinates ->
-                        sunsetSunriseTimeRepository.getSunsetSunriseTime(
-                            lat = coordinates.latitude,
-                            lon = coordinates.longitude,
-                            fetchFromRemote = true
-                        ).collect { sunsetSunriseTimeData ->
-                            wrapperForHandlerResource(result = sunsetSunriseTimeData) {
-                                sunsetSunrise = it
-                            }
-                        }
-
-                        weatherRepository.getWeatherData(
-                            coordinates.latitude,
-                            coordinates.longitude,
-                            fetchFromRemote = true
-                        ).collect { weatherInfo ->
-                            wrapperForHandlerResource(result = weatherInfo) {
-                                it.currentWeatherData?.let {
-                                    weatherData = it
+            val listInfo: MutableList<Triple<WeatherData, SunsetSunriseTimeData, String>> = mutableListOf()
+            val fetchFromRemote = !firstLaunch
+            if(firstLaunch){
+                weatherRepository.getDataForCitiesPage(cityName = "", fetchFromRemote = fetchFromRemote)
+                    .collect { result ->
+                        wrapperForHandlerResource(result = result) { list ->
+                            list.forEach {
+                                it.first?.let { data ->
+                                    it.second?.let { sunsetSunriseTimeData ->
+                                        listInfo.add(
+                                            Triple(
+                                                first = data,
+                                                second = sunsetSunriseTimeData,
+                                                third = it.third
+                                            )
+                                        )
+                                    }
                                 }
                             }
                         }
-
-                        weatherData?.let { data ->
-                            sunsetSunrise?.let { sunsetAndSunrise ->
-                                listInfo.add(Pair(first = data, second = sunsetAndSunrise))
+                    }
+            }
+            firstLaunch=false
+            listSearchQuery.forEach { name ->
+                weatherRepository.getDataForCitiesPage(cityName = name, fetchFromRemote = fetchFromRemote)
+                    .collect { result ->
+                        wrapperForHandlerResource(result = result) { list ->
+                            list.forEach {
+                                it.first?.let { data ->
+                                    it.second?.let { sunsetSunriseTimeData ->
+                                        listInfo.add(
+                                            Triple(
+                                                first = data,
+                                                second = sunsetSunriseTimeData,
+                                                third = it.third
+                                            )
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
-
-                }
             }
             state = if (listInfo.isNotEmpty()) {
                 state.copy(

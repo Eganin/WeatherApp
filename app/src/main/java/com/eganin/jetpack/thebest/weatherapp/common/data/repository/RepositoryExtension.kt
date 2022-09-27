@@ -24,8 +24,7 @@ suspend fun <T> FlowCollector<Resource<T>>.bodyForDataLoading(blockResponse: sus
     }
 
     response?.let {
-        emit(Resource.Success(data = it))
-
         emit(Resource.Loading(isLoading = false))
+        emit(Resource.Success(data = it))
     }
 }

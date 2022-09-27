@@ -8,18 +8,24 @@ import com.eganin.jetpack.thebest.weatherapp.common.domain.repository.WeatherRep
 import com.eganin.jetpack.thebest.weatherapp.common.domain.util.Resource
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherData
 import com.eganin.jetpack.thebest.weatherapp.common.domain.weather.WeatherInfo
+import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.GeocodingRepository
+import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.repository.SunsetSunriseTimeRepository
+import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.sunsetsunrisetime.SunsetSunriseTimeData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
     private val api: WeatherApi,
+    private val geocodingRepository: GeocodingRepository,
+    private val sunsetSunriseTimeRepository: SunsetSunriseTimeRepository,
     db: WeatherDatabase
 ) : WeatherRepository {
 
     private val weatherDataDao = db.weatherDataDao
     private val dataForStockDao = db.dataForStockDao
     private val weatherInfoDao = db.weatherInfoDao
+    private val cityDataDao = db.cityDataDao
 
     override suspend fun getWeatherData(
         lat: Double,
@@ -67,7 +73,7 @@ class WeatherRepositoryImpl @Inject constructor(
                         )
                     }
                 }
-                dataForStockDao.getDataDorStockEntity().data
+                dataForStockDao.getDataForStockEntity().data
             }
         }
     }
@@ -93,4 +99,65 @@ class WeatherRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun getDataForCitiesPage(
+        cityName: String,
+        fetchFromRemote: Boolean
+    ): Flow<Resource<List<Triple<WeatherData?, SunsetSunriseTimeData?,String>>>> {
+
+        var weatherData: WeatherData? = null
+        var sunsetSunrise: SunsetSunriseTimeData? = null
+
+        return flow {
+            bodyForDataLoading {
+                if (fetchFromRemote) {
+                    geocodingRepository.getGeoFromCity(
+                        cityName = cityName,
+                        fetchFromRemote = fetchFromRemote
+                    ).collect { geocodingDtoResource ->
+                        geocodingDtoResource.data?.let { geocodingDto ->
+                            sunsetSunriseTimeRepository.getSunsetSunriseTime(
+                                lat = geocodingDto.latitude,
+                                lon = geocodingDto.longitude,
+                                fetchFromRemote = fetchFromRemote
+                            ).collect { sunsetSunriseResource ->
+                                sunsetSunriseResource.data?.let {
+                                    sunsetSunrise = it
+                                }
+                            }
+
+                            getWeatherData(
+                                geocodingDto.latitude,
+                                geocodingDto.longitude,
+                                fetchFromRemote = true
+                            ).collect { weatherInfoResource ->
+                                weatherInfoResource.data?.currentWeatherData?.let { currentWeatherData ->
+                                    weatherData = currentWeatherData
+                                }
+                            }
+                        }
+
+                    }
+                    cityDataDao.insertCityData(
+                        data = Triple(
+                            first = weatherData,
+                            second = sunsetSunrise,
+                            third = cityName
+                        ).toCityDataEntity()
+                    )
+                }
+                cityDataDao.getCityData().map { it.toTriple() }
+            }
+        }
+    }
+
+    override suspend fun getCityNameFromDB(): Flow<Resource<Set<String>>> {
+        return flow{
+            bodyForDataLoading {
+                cityDataDao.getCityData().map { it.cityName }.toSet()
+            }
+        }
+    }
+
+
 }

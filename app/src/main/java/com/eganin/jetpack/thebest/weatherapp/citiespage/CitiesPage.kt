@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +25,9 @@ import com.eganin.jetpack.thebest.weatherapp.ui.theme.Typography
 fun CitiesPage(viewModel: WeatherViewModel, citiesViewModel: CitiesViewModel) {
     val info = viewModel.citiesItemList
     val state = citiesViewModel.state
+    LaunchedEffect(key1 = Unit) {
+        citiesViewModel.onEvent(event = CitiesPageEvent.LoadData(info = info))
+    }
     LaunchedEffect(key1 = info) {
         citiesViewModel.onEvent(event = CitiesPageEvent.LoadData(info = info))
     }
@@ -40,7 +42,8 @@ fun CitiesPage(viewModel: WeatherViewModel, citiesViewModel: CitiesViewModel) {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(AppTheme.colors.primaryBackground)
-                    .padding(top = 20.dp, bottom = 50.dp)
+                    .padding(top = 20.dp, bottom = 50.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 items(data.size) { index ->
                     data[index].let {
@@ -51,7 +54,7 @@ fun CitiesPage(viewModel: WeatherViewModel, citiesViewModel: CitiesViewModel) {
                                 .width(450.dp)
                                 .clickable {
                                     viewModel.onEvent(
-                                        event = DetailPageEvent.OnSearchQueryChange(query = info[index])
+                                        event = DetailPageEvent.OnSearchQueryChange(query = it.third)
                                     )
                                 },
                             shape = RoundedCornerShape(20.dp)
@@ -59,7 +62,7 @@ fun CitiesPage(viewModel: WeatherViewModel, citiesViewModel: CitiesViewModel) {
                             DynamicWeatherSection(
                                 info = it.first,
                                 sunsetAndSunriseTimeData = it.second,
-                                cityName = info[index],
+                                cityName = it.third,
                                 isSmallSize = true
                             )
                         }

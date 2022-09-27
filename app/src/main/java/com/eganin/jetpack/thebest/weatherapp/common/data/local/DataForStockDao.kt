@@ -16,5 +16,5 @@ interface DataForStockDao {
     suspend fun clearDataForStockEntity()
 
     @Query("SELECT * FROM dataforstockentity")
-    suspend fun getDataDorStockEntity() : DataForStockEntity
+    suspend fun getDataForStockEntity() : DataForStockEntity
 }

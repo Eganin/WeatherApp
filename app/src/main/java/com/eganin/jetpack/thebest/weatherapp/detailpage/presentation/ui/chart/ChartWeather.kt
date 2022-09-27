@@ -69,11 +69,6 @@ fun LinearTransactionsChart(
     } else {
         data
     }
-    val temperatureSign = if (data.filter { it >= 1 }.size == 4) {
-        "-"
-    } else {
-        "+"
-    }
 
     val density = LocalDensity.current
 
@@ -148,7 +143,7 @@ fun LinearTransactionsChart(
                         label = morningLabel,
                         textLabelPaint = textPaintLabel,
                         textPaint = textPaint,
-                        tempText = "$temperatureSign${-value}C"
+                        tempText = "${-value}C"
                     )
 
                 }
@@ -181,7 +176,7 @@ fun LinearTransactionsChart(
                         label = nightLabel,
                         textLabelPaint = textPaintLabel,
                         textPaint = textPaint,
-                        tempText = "$temperatureSign${-value}C"
+                        tempText = "${-value}C"
                     )
                     drawLine(
                         start = Offset(
@@ -230,7 +225,7 @@ fun LinearTransactionsChart(
                                 label = dayLabel,
                                 textLabelPaint = textPaintLabel,
                                 textPaint = textPaint,
-                                tempText = "$temperatureSign${-value}C"
+                                tempText = "${-value}C"
                             )
                         } else {
                             drawTextInfo(
@@ -240,7 +235,7 @@ fun LinearTransactionsChart(
                                 label = eveningLabel,
                                 textLabelPaint = textPaintLabel,
                                 textPaint = textPaint,
-                                tempText = "$temperatureSign${-value}C"
+                                tempText = "${-value}C"
                             )
                         }
                     }

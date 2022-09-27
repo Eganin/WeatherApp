@@ -14,7 +14,8 @@ import com.eganin.jetpack.thebest.weatherapp.common.data.local.entities.*
         SunsetSunriseTimeDataEntity::class,
         DataForStockEntity::class,
         WeatherDataEntity::class,
-        WeatherInfoEntity::class
+        WeatherInfoEntity::class,
+        CityDataEntity::class
     ],
     version = 1
 )
@@ -29,7 +30,8 @@ abstract class WeatherDatabase : RoomDatabase() {
     abstract val weatherDataDao: WeatherDataDao
     abstract val sunsetSunriseDao: SunsetSunriseTimeDataDao
     abstract val dataForStockDao: DataForStockDao
-    abstract val weatherInfoDao : WeatherInfoDao
+    abstract val weatherInfoDao: WeatherInfoDao
+    abstract val cityDataDao: CityDataDao
 
     companion object {
         const val NAME_DATABASE = "weather.db"

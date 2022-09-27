@@ -32,9 +32,19 @@ class WeatherViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
-    private val listSearchQuery = mutableSetOf<String>()
+    private var listSearchQuery = mutableSetOf<String>()
 
     private val fakeData = Pair(first = 0.0, second = 0.0)
+
+    init {
+        viewModelScope.launch {
+            repository.getCityNameFromDB().collect{result->
+                wrapperForHandlerResource(result = result, onStateChangeSuccess = {
+                    listSearchQuery= it as MutableSet<String>
+                })
+            }
+        }
+    }
 
     fun onEvent(event: DetailPageEvent) {
         when (event) {

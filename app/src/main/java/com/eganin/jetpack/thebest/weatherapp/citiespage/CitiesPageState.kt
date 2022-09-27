@@ -5,6 +5,6 @@ import com.eganin.jetpack.thebest.weatherapp.detailpage.domain.sunsetsunrisetime
 
 data class CitiesPageState(
     var isLoading: Boolean=false,
-    var info : List<Pair<WeatherData, SunsetSunriseTimeData>>? = null,
+    var info : List<Triple<WeatherData, SunsetSunriseTimeData,String>>? = null,
     val error: String? = null
 )

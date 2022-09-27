@@ -107,14 +107,14 @@ fun DynamicWeatherLandscape(
                 sunProgressX = startXPositionIcon
                 sunProgressY = startYPositionIcon
 
-                PaintStatusBarColor(color = SystemBarColorSunrise)
+                if(!isSmallSize) PaintStatusBarColor(color = SystemBarColorSunrise)
                 R.drawable.day to R.drawable.sunrise
             }
 
             (info.time.hour in 6..11 && (sunsetAndSunriseTimeData.sunriseHour - info.time.hour) !in -1..2) || (info.time.hour in 12..16) -> {
                 sunProgressY = maxYPositionIcon
                 sunProgressX = maxXPositionIcon
-                PaintStatusBarColor(color = SystemBarColorDay)
+                if(!isSmallSize) PaintStatusBarColor(color = SystemBarColorDay)
                 R.drawable.day to null
             }
 
@@ -124,7 +124,7 @@ fun DynamicWeatherLandscape(
                 moonIsVisible = true
                 moonProgressX = startXPositionIcon
                 moonProgressY = startYPositionIcon
-                PaintStatusBarColor(color = SystemBarColorSunset)
+                if(!isSmallSize) PaintStatusBarColor(color = SystemBarColorSunset)
                 R.drawable.night to R.drawable.sunset
             }
 
@@ -133,7 +133,7 @@ fun DynamicWeatherLandscape(
                 moonIsVisible = true
                 moonProgressX = maxXPositionIcon
                 moonProgressY = maxYPositionIcon
-                PaintStatusBarColor(color = SystemBarColorNight)
+                if(!isSmallSize) PaintStatusBarColor(color = SystemBarColorNight)
                 R.drawable.night to null
             }
 
