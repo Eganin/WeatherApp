@@ -17,9 +17,9 @@ suspend fun <T> FlowCollector<Resource<T>>.bodyForDataLoading(blockResponse: sus
         e.printStackTrace()
         emit(Resource.Error(message = "Couldn't load data"))
         null
-    }catch(e : Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
-        emit(Resource.Error(message = "Unknown error"))
+        emit(Resource.Error(message = "Unknown error.Turn on Gps and restart the application"))
         null
     }
 

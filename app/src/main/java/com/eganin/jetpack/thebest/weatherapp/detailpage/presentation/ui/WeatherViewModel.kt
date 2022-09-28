@@ -1,5 +1,6 @@
 package com.eganin.jetpack.thebest.weatherapp.detailpage.presentation.ui
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -35,6 +36,8 @@ class WeatherViewModel @Inject constructor(
     private var listSearchQuery = mutableSetOf<String>()
 
     private val fakeData = Pair(first = 0.0, second = 0.0)
+
+    private var counterRefresh = -1
 
     init {
         viewModelScope.launch {
@@ -222,7 +225,8 @@ class WeatherViewModel @Inject constructor(
         )
     }
 
-    private fun errorLocationState() {
+    private  fun errorLocationState() {
+        Log.d("EEE","error state")
         onEvent(event = DetailPageEvent.Error)
     }
 
