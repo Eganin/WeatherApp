@@ -2,6 +2,7 @@ package com.eganin.jetpack.thebest.weatherapp.ui
 
 import android.Manifest
 import android.os.Bundle
+import android.os.PersistableBundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher

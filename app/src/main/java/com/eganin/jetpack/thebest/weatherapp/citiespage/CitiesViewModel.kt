@@ -1,5 +1,6 @@
 package com.eganin.jetpack.thebest.weatherapp.citiespage
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -25,10 +26,21 @@ class CitiesViewModel @Inject constructor(
 
     private var firstLaunch = true
 
+    private var listSearchQuery = mutableSetOf<String>()
+
+    init {
+        updatePrivateSearchQuery()
+    }
+
     fun onEvent(event: CitiesPageEvent) {
         when (event) {
             is CitiesPageEvent.LoadData -> {
-                loadDataForCitiesPage(listSearchQuery = event.info)
+                if (event.info == null) {
+                    firstLaunch=true
+                    loadDataForCitiesPage()
+                }
+                val searchQuery = event.info?.filter { it !in listSearchQuery }
+                if (searchQuery?.isNotEmpty() == true) loadDataForCitiesPage(listSearchQuery = searchQuery)
             }
             is CitiesPageEvent.Error -> {
                 state = state.copy(
@@ -39,14 +51,28 @@ class CitiesViewModel @Inject constructor(
         }
     }
 
-    private fun loadDataForCitiesPage(listSearchQuery: List<String>) {
+    private fun updatePrivateSearchQuery() {
+        viewModelScope.launch {
+            weatherRepository.getCityNameFromDB().collect { result ->
+                wrapperForHandlerResource(result = result, onStateChangeSuccess = {
+                    if (it.isNotEmpty()) listSearchQuery = it as MutableSet<String>
+                })
+            }
+        }
+    }
+
+    private fun loadDataForCitiesPage(listSearchQuery: List<String> = emptyList()) {
         viewModelScope.launch {
             startLoadingState()
 
-            val listInfo: MutableList<Triple<WeatherData, SunsetSunriseTimeData, String>> = mutableListOf()
+            val listInfo: MutableList<Triple<WeatherData, SunsetSunriseTimeData, String>> =
+                mutableListOf()
             val fetchFromRemote = !firstLaunch
-            if(firstLaunch){
-                weatherRepository.getDataForCitiesPage(cityName = "", fetchFromRemote = fetchFromRemote)
+            if (firstLaunch) {
+                weatherRepository.getDataForCitiesPage(
+                    cityName = "",
+                    fetchFromRemote = fetchFromRemote
+                )
                     .collect { result ->
                         wrapperForHandlerResource(result = result) { list ->
                             list.forEach {
@@ -65,9 +91,12 @@ class CitiesViewModel @Inject constructor(
                         }
                     }
             }
-            firstLaunch=false
+            firstLaunch = false
             listSearchQuery.forEach { name ->
-                weatherRepository.getDataForCitiesPage(cityName = name, fetchFromRemote = fetchFromRemote)
+                weatherRepository.getDataForCitiesPage(
+                    cityName = name,
+                    fetchFromRemote = fetchFromRemote
+                )
                     .collect { result ->
                         wrapperForHandlerResource(result = result) { list ->
                             list.forEach {
@@ -86,6 +115,7 @@ class CitiesViewModel @Inject constructor(
                         }
                     }
             }
+            updatePrivateSearchQuery()
             state = if (listInfo.isNotEmpty()) {
                 state.copy(
                     info = listInfo,

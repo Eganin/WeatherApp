@@ -40,7 +40,7 @@ class WeatherViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getCityNameFromDB().collect{result->
                 wrapperForHandlerResource(result = result, onStateChangeSuccess = {
-                    listSearchQuery= it as MutableSet<String>
+                    if(it.isNotEmpty()) listSearchQuery= it as MutableSet<String>
                 })
             }
         }
@@ -59,7 +59,7 @@ class WeatherViewModel @Inject constructor(
             }
 
             is DetailPageEvent.OnSearchQueryChange -> {
-                state = state.copy(searchQuery = event.query)
+                state = state.copy(searchQuery = event.query.trim())
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
                     delay(2000L)

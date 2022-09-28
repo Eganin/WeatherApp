@@ -26,7 +26,7 @@ fun CitiesPage(viewModel: WeatherViewModel, citiesViewModel: CitiesViewModel) {
     val info = viewModel.citiesItemList
     val state = citiesViewModel.state
     LaunchedEffect(key1 = Unit) {
-        citiesViewModel.onEvent(event = CitiesPageEvent.LoadData(info = info))
+        citiesViewModel.onEvent(event = CitiesPageEvent.LoadData(info = null))
     }
     LaunchedEffect(key1 = info) {
         citiesViewModel.onEvent(event = CitiesPageEvent.LoadData(info = info))

@@ -23,17 +23,9 @@ fun WeatherInfo.toWeatherInfoEntity(): WeatherInfoEntity {
 
 fun WeatherInfoEntity.toWeatherInfo(): WeatherInfo {
     val newMap = mutableMapOf<Int, List<WeatherData>>()
-    //Log.d("EEE",weatherDataPerDay.toString())
     weatherDataPerDay.forEach { (key, value) ->
         newMap[key] = value.map { it.toWeatherData() }
     }
-
-    /*
-    weatherDataPerDay.get(0)?.forEach {
-        Log.d("EEE", it.toString())
-    }
-
-     */
 
     return WeatherInfo(
         weatherDataPerDay = newMap,
