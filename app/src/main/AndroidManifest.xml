@@ -16,10 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WeatherApp"
         tools:targetApi="31"
-        android:name=".WeatherApp"
+        android:name=".presentation.application.WeatherApp"
         >
         <activity
-            android:name="com.eganin.jetpack.thebest.weatherapp.ui.MainActivity"
+            android:name="com.eganin.jetpack.thebest.weatherapp.presentation.ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.WeatherApp">
