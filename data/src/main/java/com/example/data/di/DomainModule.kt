@@ -1,13 +1,12 @@
-package com.eganin.jetpack.thebest.weatherapp.presentation.di
+package com.example.data.di
 
 import android.app.Application
 import androidx.room.Room
-import com.eganin.jetpack.thebest.weatherapp.BuildConfig
-import com.example.data.remote.WeatherApi
+import com.example.data.BuildConfig
 import com.example.data.local.WeatherDatabase
-import com.example.data.local.WeatherDatabase.Companion.NAME_DATABASE
 import com.example.data.remote.GeocodingApi
 import com.example.data.remote.SunsetSunriseTimeApi
+import com.example.data.remote.WeatherApi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -27,8 +26,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
-
+object DomainModule {
     @Provides
     @Singleton
     fun provideWeatherApi(client: OkHttpClient): WeatherApi {
@@ -93,8 +91,7 @@ object AppModule {
         return Room.databaseBuilder(
             app,
             WeatherDatabase::class.java,
-            NAME_DATABASE
+            WeatherDatabase.NAME_DATABASE
         ).fallbackToDestructiveMigration().build()
     }
-
 }

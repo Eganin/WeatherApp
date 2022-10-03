@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.example.domain.location.LocationTracker
 import com.google.android.gms.location.*
@@ -61,24 +62,29 @@ class DefaultLocationTracker @Inject constructor(
         }
 
 
-
         return suspendCancellableCoroutine { continuation ->
             locationClient.lastLocation.apply {
                 if (isComplete) {
+                    Log.d("EEE","COMPLETE")
                     if (isSuccessful) {
+                        Log.d("EEE","SUCCESSFUL")
                         continuation.resume(result)
                     } else {
+                        Log.d("EEE"," NOTSUCCESSFUL")
                         continuation.resume(null)
                     }
                     return@suspendCancellableCoroutine
                 }
                 addOnSuccessListener {
+                    Log.d("EEE","SUCCESS")
                     continuation.resume(it)
                 }
                 addOnFailureListener {
+                    Log.d("EEE","FAIL")
                     continuation.resume(null)
                 }
                 addOnCanceledListener {
+                    Log.d("EEE","CANCEL")
                     continuation.cancel()
                 }
             }

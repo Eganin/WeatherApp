@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.location.LocationTracker
 import com.example.domain.repository.WeatherRepository
 import com.example.domain.util.Resource
-import com.eganin.jetpack.thebest.weatherapp.common.presentation.getProviderLocation
+import com.eganin.jetpack.thebest.weatherapp.presentation.common.getProviderLocation
 import com.example.domain.repository.GeocodingRepository
 import com.example.domain.repository.SunsetSunriseTimeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -224,6 +224,7 @@ class WeatherViewModel @Inject constructor(
     }
 
     private  fun errorLocationState() {
+        locationTracker.update()
         Log.d("EEE","error state")
         onEvent(event = DetailPageEvent.Error)
     }

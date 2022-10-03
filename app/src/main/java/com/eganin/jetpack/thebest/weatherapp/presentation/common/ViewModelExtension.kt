@@ -1,4 +1,4 @@
-package com.eganin.jetpack.thebest.weatherapp.common.presentation
+package com.eganin.jetpack.thebest.weatherapp.presentation.common
 
 import com.example.domain.location.LocationTracker
 import com.example.domain.repository.GeocodingRepository
