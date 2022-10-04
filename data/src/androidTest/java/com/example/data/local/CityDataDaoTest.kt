@@ -15,7 +15,7 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 @SmallTest
 @HiltAndroidTest
-class CityDataDaoTest: DaoTest() {
+internal class CityDataDaoTest: DaoTest() {
 
     private lateinit var dao: CityDataDao
 

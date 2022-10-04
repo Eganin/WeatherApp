@@ -13,7 +13,7 @@ import org.junit.Test
 @HiltAndroidTest
 @ExperimentalCoroutinesApi
 @SmallTest
-class DataForStockDaoTest : DaoTest() {
+internal class DataForStockDaoTest : DaoTest() {
 
     private lateinit var dao: DataForStockDao
 

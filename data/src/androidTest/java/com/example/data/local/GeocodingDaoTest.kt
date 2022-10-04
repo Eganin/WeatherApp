@@ -13,7 +13,7 @@ import org.junit.Test
 @HiltAndroidTest
 @ExperimentalCoroutinesApi
 @SmallTest
-class GeocodingDaoTest : DaoTest() {
+internal class GeocodingDaoTest : DaoTest() {
 
     private lateinit var dao: GeocodingDao
 

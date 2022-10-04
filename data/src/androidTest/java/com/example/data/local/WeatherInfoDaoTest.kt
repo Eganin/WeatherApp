@@ -16,7 +16,7 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 @SmallTest
 @HiltAndroidTest
-class WeatherInfoDaoTest : DaoTest() {
+internal class WeatherInfoDaoTest : DaoTest() {
 
     private lateinit var dao: WeatherInfoDao
 

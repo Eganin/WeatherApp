@@ -13,7 +13,7 @@ import org.junit.Test
 @SmallTest
 @HiltAndroidTest
 @ExperimentalCoroutinesApi
-class SunsetSunriseTimeDataDaoTest : DaoTest() {
+internal class SunsetSunriseTimeDataDaoTest : DaoTest() {
 
     private lateinit var dao: SunsetSunriseTimeDataDao
 

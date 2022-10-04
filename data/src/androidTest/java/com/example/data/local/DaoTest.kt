@@ -6,7 +6,7 @@ import org.junit.Rule
 import javax.inject.Inject
 import javax.inject.Named
 
-open class DaoTest {
+internal open class DaoTest {
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
