@@ -6,6 +6,8 @@ import com.example.domain.repository.SunsetSunriseTimeRepository
 import com.example.domain.repository.WeatherRepository
 import com.example.domain.usecase.GetCityFromDb
 import com.example.domain.usecase.GetCoordinatesFromCityName
+import com.example.domain.usecase.GetDataForCitiesPage
+import com.example.domain.usecase.GetDataForEveryDay
 import com.example.domain.usecase.GetDataStock
 import com.example.domain.usecase.GetSunsetAndSunriseTimes
 import com.example.domain.usecase.GetWeatherInfo
@@ -46,6 +48,12 @@ object AppModule {
                 geocodingRepository = geocodingRepository
             ),
             getCoordinatesFromCity = GetCoordinatesFromCityName(
+                locationTracker = locationTracker,
+                geocodingRepository = geocodingRepository,
+                weatherRepository = weatherRepository
+            ),
+            getDataForCitiesPage = GetDataForCitiesPage(weatherRepository = weatherRepository),
+            getDataForEveryDay = GetDataForEveryDay(
                 locationTracker = locationTracker,
                 geocodingRepository = geocodingRepository,
                 weatherRepository = weatherRepository

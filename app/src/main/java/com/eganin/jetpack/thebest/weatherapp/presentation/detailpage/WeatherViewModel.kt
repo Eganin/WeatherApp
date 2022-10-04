@@ -1,8 +1,10 @@
 package com.eganin.jetpack.thebest.weatherapp.presentation.detailpage
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.capitalize
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.location.LocationTracker
@@ -54,11 +56,13 @@ class WeatherViewModel @Inject constructor(
             }
 
             is DetailPageEvent.OnSearchQueryChange -> {
-                state = state.copy(searchQuery = event.query.trim())
+                state = state.copy(searchQuery = event.query.trim().capitalize())
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
                     delay(2000L)
-                    loadGeocoding(cityName = state.searchQuery)
+                    if (state.searchQuery.isNotEmpty() || state.searchQuery.isNotBlank()) loadGeocoding(
+                        cityName = state.searchQuery
+                    )
                 }
             }
 
@@ -177,6 +181,8 @@ class WeatherViewModel @Inject constructor(
             is Resource.Error -> {
                 result.message?.let {
                     onEvent(event = DetailPageEvent.Error(message = it))
+                } ?: run {
+                    onEvent(event = DetailPageEvent.Error(message = "Error"))
                 }
             }
 

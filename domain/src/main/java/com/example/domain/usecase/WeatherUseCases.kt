@@ -5,5 +5,7 @@ data class WeatherUseCases(
     val getWeatherInfo: GetWeatherInfo,
     val getDataStock: GetDataStock,
     val getSunsetAndSunriseTimes: GetSunsetAndSunriseTimes,
-    val getCoordinatesFromCity : GetCoordinatesFromCityName
+    val getCoordinatesFromCity : GetCoordinatesFromCityName,
+    val getDataForCitiesPage: GetDataForCitiesPage,
+    val getDataForEveryDay: GetDataForEveryDay
 )

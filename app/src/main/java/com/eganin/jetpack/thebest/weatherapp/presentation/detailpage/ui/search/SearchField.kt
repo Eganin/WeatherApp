@@ -21,7 +21,7 @@ fun SearchField(viewModel: WeatherViewModel) {
 
     val trailingIconView = @Composable {
         IconButton(onClick = {
-            if (state.searchQuery.isNotEmpty()) {
+            if (state.searchQuery.isNotEmpty() || state.searchQuery.isNotBlank()) {
                 viewModel.onEvent(event = DetailPageEvent.OnSearchQueryChange(query = state.searchQuery))
             }
         }) {

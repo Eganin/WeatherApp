@@ -5,17 +5,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eganin.jetpack.thebest.weatherapp.presentation.detailpage.DetailPageEvent
 import com.example.domain.repository.WeatherRepository
 import com.example.domain.util.Resource
 import com.example.domain.models.weather.WeatherData
 import com.example.domain.models.sunsetsunrisetime.SunsetSunriseTimeData
+import com.example.domain.usecase.WeatherUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CitiesViewModel @Inject constructor(
-    private val weatherRepository: WeatherRepository,
+    private val weatherUseCases: WeatherUseCases,
 ) : ViewModel() {
 
     var state by mutableStateOf(CitiesPageState())
@@ -33,16 +35,17 @@ class CitiesViewModel @Inject constructor(
         when (event) {
             is CitiesPageEvent.LoadData -> {
                 if (event.info == null) {
-                    firstLaunch=true
+                    firstLaunch = true
                     loadDataForCitiesPage()
                 }
                 val searchQuery = event.info?.filter { it !in listSearchQuery }
                 if (searchQuery?.isNotEmpty() == true) loadDataForCitiesPage(listSearchQuery = searchQuery)
             }
+
             is CitiesPageEvent.Error -> {
                 state = state.copy(
                     isLoading = false,
-                    error = "Error Loading cities info"
+                    error = event.message
                 )
             }
         }
@@ -50,7 +53,7 @@ class CitiesViewModel @Inject constructor(
 
     private fun updatePrivateSearchQuery() {
         viewModelScope.launch {
-            weatherRepository.getCityNameFromDB().collect { result ->
+            weatherUseCases.getCity().collect { result ->
                 wrapperForHandlerResource(result = result, onStateChangeSuccess = {
                     if (it.isNotEmpty()) listSearchQuery = it as MutableSet<String>
                 })
@@ -66,51 +69,15 @@ class CitiesViewModel @Inject constructor(
                 mutableListOf()
             val fetchFromRemote = !firstLaunch
             if (firstLaunch) {
-                weatherRepository.getDataForCitiesPage(
-                    cityName = "",
-                    fetchFromRemote = fetchFromRemote
-                )
-                    .collect { result ->
-                        wrapperForHandlerResource(result = result) { list ->
-                            list.forEach {
-                                it.first?.let { data ->
-                                    it.second?.let { sunsetSunriseTimeData ->
-                                        listInfo.add(
-                                            Triple(
-                                                first = data,
-                                                second = sunsetSunriseTimeData,
-                                                third = it.third
-                                            )
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
+                loadData(fetchFromRemote = fetchFromRemote, cityName = "") {
+                    listInfo.add(it)
+                }
             }
             firstLaunch = false
             listSearchQuery.forEach { name ->
-                weatherRepository.getDataForCitiesPage(
-                    cityName = name,
-                    fetchFromRemote = fetchFromRemote
-                )
-                    .collect { result ->
-                        wrapperForHandlerResource(result = result) { list ->
-                            list.forEach {
-                                it.first?.let { data ->
-                                    it.second?.let { sunsetSunriseTimeData ->
-                                        listInfo.add(
-                                            Triple(
-                                                first = data,
-                                                second = sunsetSunriseTimeData,
-                                                third = it.third
-                                            )
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
+                loadData(fetchFromRemote = fetchFromRemote, cityName = name) {
+                    listInfo.add(it)
+                }
             }
             updatePrivateSearchQuery()
             state = if (listInfo.isNotEmpty()) {
@@ -129,6 +96,34 @@ class CitiesViewModel @Inject constructor(
         }
     }
 
+    private suspend fun loadData(
+        fetchFromRemote: Boolean,
+        cityName: String,
+        onSuccess: (Triple<WeatherData, SunsetSunriseTimeData, String>) -> Unit
+    ) {
+        weatherUseCases.getDataForCitiesPage(
+            cityName = cityName,
+            fetchFromRemote = fetchFromRemote
+        )
+            .collect { result ->
+                wrapperForHandlerResource(result = result) { list ->
+                    list.forEach {
+                        it.first?.let { data ->
+                            it.second?.let { sunsetSunriseTimeData ->
+                                onSuccess(
+                                    Triple(
+                                        first = data,
+                                        second = sunsetSunriseTimeData,
+                                        third = it.third
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+    }
+
     private suspend fun <T> wrapperForHandlerResource(
         result: Resource<T>,
         onStateChangeSuccess: suspend (T) -> Unit
@@ -141,7 +136,11 @@ class CitiesViewModel @Inject constructor(
             }
 
             is Resource.Error -> {
-                errorLocationState()
+                result.message?.let {
+                    onEvent(event = CitiesPageEvent.Error(message = it))
+                }?: run {
+                    onEvent(event = CitiesPageEvent.Error(message = "Error"))
+                }
             }
 
             is Resource.Loading -> {
@@ -155,9 +154,5 @@ class CitiesViewModel @Inject constructor(
             isLoading = true,
             error = null,
         )
-    }
-
-    private fun errorLocationState() {
-        onEvent(event = CitiesPageEvent.Error)
     }
 }

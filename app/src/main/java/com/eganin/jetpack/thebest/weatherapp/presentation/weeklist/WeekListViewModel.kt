@@ -5,25 +5,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eganin.jetpack.thebest.weatherapp.presentation.citiespage.CitiesPageEvent
 import com.example.domain.location.LocationTracker
 import com.example.domain.repository.WeatherRepository
 import com.example.domain.util.Resource
 import com.eganin.jetpack.thebest.weatherapp.presentation.common.getProviderLocation
 import com.example.domain.repository.GeocodingRepository
+import com.example.domain.usecase.WeatherUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class WeekListViewModel @Inject constructor(
-    private val repository: WeatherRepository,
-    private val locationTracker: LocationTracker,
-    private val geocodingRepository: GeocodingRepository
+    private val weatherUseCases: WeatherUseCases
 ) : ViewModel() {
     var state by mutableStateOf(WeekListState())
         private set
-
-    private val fakeData = Pair(first = 0.0, second = 0.0)
 
     fun onEvent(event: WeekListEvent) {
         when (event) {
@@ -33,7 +31,7 @@ class WeekListViewModel @Inject constructor(
 
             is WeekListEvent.Error -> {
                 state = state.copy(
-                    isLoading = false, error = "Couldn't retrieve location.Make sure enable GPS"
+                    isLoading = false, error = event.message
                 )
             }
         }
@@ -43,11 +41,7 @@ class WeekListViewModel @Inject constructor(
         viewModelScope.launch {
             startLoadingState()
 
-            val (data, fetchFromRemote) = provideDataForRepository(searchQuery = searchQuery)
-
-            repository.getDataForEveryDay(
-                lat = data.first, long = data.second, fetchFromRemote = fetchFromRemote
-            ).collect { result ->
+            weatherUseCases.getDataForEveryDay(searchQuery = searchQuery).collect { result ->
                 wrapperForHandlerResource(result = result) {
                     state = state.copy(
                         info = it.map {
@@ -73,7 +67,11 @@ class WeekListViewModel @Inject constructor(
             }
 
             is Resource.Error -> {
-                errorLocationState()
+                result.message?.let {
+                    onEvent(event = WeekListEvent.Error(message = it))
+                }?: run {
+                    onEvent(event = WeekListEvent.Error(message = "Error"))
+                }
             }
 
             is Resource.Loading -> {
@@ -87,26 +85,5 @@ class WeekListViewModel @Inject constructor(
             isLoading = true,
             error = null,
         )
-    }
-
-    private fun errorLocationState() {
-        locationTracker.update()
-        onEvent(event = WeekListEvent.Error)
-    }
-
-    private suspend fun provideDataForRepository(searchQuery: String): Pair<Pair<Double, Double>, Boolean> {
-        getProviderLocation(
-            searchQuery = searchQuery,
-            geocodingRepository = geocodingRepository,
-            locationTracker = locationTracker
-        )?.let { location ->
-            return Pair(
-                first = Pair(first = location.first, second = location.second),
-                second = true
-            )
-        } ?: run {
-            errorLocationState()
-            return Pair(first = fakeData, second = false)
-        }
     }
 }
