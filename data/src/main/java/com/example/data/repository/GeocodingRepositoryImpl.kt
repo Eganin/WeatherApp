@@ -19,7 +19,7 @@ class GeocodingRepositoryImpl @Inject constructor(
 ) : GeocodingRepository {
 
     private val geocodingDao = db.geocodingDao
-    override suspend fun getGeoFromCity(
+    override fun getGeoFromCity(
         cityName: String,
         fetchFromRemote: Boolean
     ): Flow<Resource<GeocodingData>> {

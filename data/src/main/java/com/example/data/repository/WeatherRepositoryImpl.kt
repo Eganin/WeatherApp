@@ -27,7 +27,7 @@ class WeatherRepositoryImpl @Inject constructor(
     private val weatherInfoDao = db.weatherInfoDao
     private val cityDataDao = db.cityDataDao
 
-    override suspend fun getWeatherData(
+    override fun getWeatherData(
         lat: Double,
         long: Double,
         fetchFromRemote: Boolean
@@ -51,7 +51,7 @@ class WeatherRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDataForStock(
+    override fun getDataForStock(
         lat: Double,
         long: Double,
         fetchFromRemote: Boolean
@@ -78,7 +78,7 @@ class WeatherRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDataForEveryDay(
+    override fun getDataForEveryDay(
         lat: Double,
         long: Double,
         fetchFromRemote: Boolean
@@ -100,7 +100,7 @@ class WeatherRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDataForCitiesPage(
+    override fun getDataForCitiesPage(
         cityName: String,
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Triple<WeatherData?, SunsetSunriseTimeData?,String>>>> {
@@ -151,7 +151,7 @@ class WeatherRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCityNameFromDB(): Flow<Resource<Set<String>>> {
+    override fun getCityNameFromDB(): Flow<Resource<Set<String>>> {
         return flow{
             bodyForDataLoading {
                 cityDataDao.getCityData().map { it.cityName }.toSet()

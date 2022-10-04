@@ -5,5 +5,5 @@ import com.example.domain.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface GeocodingRepository {
-    suspend fun getGeoFromCity(cityName : String,fetchFromRemote: Boolean) : Flow<Resource<GeocodingData>>
+    fun getGeoFromCity(cityName : String,fetchFromRemote: Boolean) : Flow<Resource<GeocodingData>>
 }

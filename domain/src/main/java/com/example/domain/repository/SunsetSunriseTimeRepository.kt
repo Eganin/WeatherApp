@@ -5,7 +5,7 @@ import com.example.domain.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface SunsetSunriseTimeRepository {
-    suspend fun getSunsetSunriseTime(
+    fun getSunsetSunriseTime(
         lat: Double,
         lon: Double,
         fetchFromRemote: Boolean

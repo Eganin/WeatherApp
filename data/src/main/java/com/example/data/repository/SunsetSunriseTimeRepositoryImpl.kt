@@ -19,7 +19,7 @@ class SunsetSunriseTimeRepositoryImpl @Inject constructor(
 ) : SunsetSunriseTimeRepository {
 
     private val sunsetSunriseDao = db.sunsetSunriseDao
-    override suspend fun getSunsetSunriseTime(
+    override fun getSunsetSunriseTime(
         lat: Double, lon: Double, fetchFromRemote: Boolean
     ): Flow<Resource<SunsetSunriseTimeData>> {
 
