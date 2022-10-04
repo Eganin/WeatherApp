@@ -39,9 +39,9 @@ class WeatherViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            repository.getCityNameFromDB().collect{result->
+            repository.getCityNameFromDB().collect { result ->
                 wrapperForHandlerResource(result = result, onStateChangeSuccess = {
-                    if(it.isNotEmpty()) listSearchQuery= it as MutableSet<String>
+                    if (it.isNotEmpty()) listSearchQuery = it as MutableSet<String>
                 })
             }
         }
@@ -119,6 +119,7 @@ class WeatherViewModel @Inject constructor(
             startLoadingState()
 
             val (data, fetchFromRemote) = provideDataForRepository()
+
             repository.getDataForStock(
                 lat = data.first,
                 long = data.second,
@@ -223,9 +224,9 @@ class WeatherViewModel @Inject constructor(
         )
     }
 
-    private  fun errorLocationState() {
+    private fun errorLocationState() {
         locationTracker.update()
-        Log.d("EEE","error state")
+        Log.d("EEE", "error state")
         onEvent(event = DetailPageEvent.Error)
     }
 
